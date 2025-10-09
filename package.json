@@ -4,9 +4,16 @@
   "private": true,
   "scripts": {
     "build": "next build --turbopack",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "pnpm seed",
+    "db:studio": "prisma studio",
     "dev": "next dev --turbopack",
     "lint": "eslint",
-    "seed": "find app -name '*.seed.ts' -print0 | xargs -0 -n1 pnpm dlx tsx",
+    "seed": "pnpm dlx tsx prisma/seed.ts",
     "start": "next start",
     "studio": "prisma studio"
   },
