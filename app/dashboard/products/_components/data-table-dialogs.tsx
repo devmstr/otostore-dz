@@ -8,8 +8,6 @@ import { useProductDialogs } from './data-table-provider'
 export function ProductsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useProductDialogs()
 
-  console.log({ open })
-
   return (
     <>
       <ProductsMutateDrawer

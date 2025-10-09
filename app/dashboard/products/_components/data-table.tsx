@@ -3,15 +3,8 @@
 import * as React from 'react'
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table'
@@ -27,20 +20,29 @@ import {
 
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
-import { useServerPaginatedTable } from '@/hooks/use-server-paginated-table'
 import { LoaderCircle } from 'lucide-react'
 import { DataTableBulkActions } from './data-table-bulk-actions'
+import { useTableUrlParamsState } from '@/hooks/use-table-url-params-state'
+import { useQuery } from '@tanstack/react-query'
+import { getAllProductQueryOption } from '@/app/dashboard/products/_queries/queries'
+import { ProductDto } from '@/domain/dto/product.dto'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+  columns: ColumnDef<ProductDto, any>[]
 }
 
 export function DataTable<TData, TValue>({
   columns
 }: DataTableProps<TData, TValue>) {
-  const { table, isLoading, error, rowCount } = useServerPaginatedTable<TData>({
-    columns,
-    fetchUrl: '/api/products',
+  const {
+    columnFilters,
+    getSearchParams,
+    pagination,
+    setColumnFilters,
+    setPagination,
+    setSorting,
+    sorting
+  } = useTableUrlParamsState({
     defaultPageSize: 10,
     filterableColumns: [
       { id: 'category', type: 'multi-select' },
@@ -50,31 +52,88 @@ export function DataTable<TData, TValue>({
     ]
   })
 
+  // Query data from server
+  const { data, isLoading, isError, error } = useQuery(
+    getAllProductQueryOption(getSearchParams())
+  )
+  const products = data?.data ?? []
+  const totalCount = data?.total ?? 0
+  const totalPages =
+    typeof data?.total === 'number' && data.total > 0
+      ? Math.ceil(data.total / pagination.pageSize)
+      : 1
+
+  // Table local state
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    pageCount: totalPages,
+    rowCount: totalCount,
+    state: {
+      pagination,
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection
+    },
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel()
+  })
+
   return (
     <div className="flex flex-col gap-4">
       <DataTableToolbar table={table} />
+
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <LoaderCircle className="text-muted-foreground w-5 h-5 animate-spin" />
+                </TableCell>
+              </TableRow>
+            ) : isError ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-red-500"
+                >
+                  Error: {String(error)}
+                </TableCell>
+              </TableRow>
+            ) : products.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -94,21 +153,16 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center flex justify-center items-center"
+                  className="h-24 text-center"
                 >
-                  {error && <span>Error! occured 404</span>}
-
-                  {isLoading && (
-                    <LoaderCircle className="text-muted-foreground w-5 h-5 animate-spin" />
-                  )}
-
-                  {!isLoading && !error && <span>No results.</span>}
+                  No results found.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
+
       <DataTablePagination table={table} />
       <DataTableBulkActions table={table} />
     </div>

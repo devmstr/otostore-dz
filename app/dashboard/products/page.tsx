@@ -6,9 +6,10 @@ import { z } from 'zod'
 
 import { columns } from './_components/columns'
 import { DataTable } from './_components/data-table'
-import { Product } from './data/schema'
+import { Product } from './_seed/schema'
 import { ProductDialogsProvider } from './_components/data-table-provider'
 import { ProductsDialogs } from './_components/data-table-dialogs'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'Tasks',
@@ -35,7 +36,9 @@ export default async function TaskPage() {
         />
       </div>
       <div className="hidden h-full flex-1 flex-col gap-8 p-8 md:flex">
-        <DataTable columns={columns} />
+        <Suspense fallback={<p>Loading...</p>}>
+          <DataTable columns={columns} />
+        </Suspense>
         <ProductsDialogs />
       </div>
     </ProductDialogsProvider>

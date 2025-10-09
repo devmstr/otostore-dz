@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import { useEffect } from 'react'
+import Image from 'next/image'
 
 interface UploadedFileItemProps {
   file: File
@@ -26,10 +27,12 @@ export function UploadedFileItem({
     >
       <div className="flex items-center gap-2">
         <div className="w-18 h-14 bg-muted rounded-sm flex items-center justify-center self-start row-span-2 overflow-hidden">
-          <img
+          <Image
             src={imageUrl}
             alt={file.name}
             className="w-full h-full object-cover"
+            width={100}
+            height={100}
           />
         </div>
 

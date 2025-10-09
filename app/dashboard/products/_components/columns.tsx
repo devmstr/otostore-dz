@@ -5,15 +5,15 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 
-import { categories, availability, priceRanges } from '../data/data.filters'
-import { Product } from '../data/schema'
+import { categories, availability, priceRanges } from '../_seed/data.filters'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { DynamicIcon } from '@/lib/lucide-icons.resolver'
 import Image from 'next/image'
 import { ImageWithFallback } from '@/lib/image-with-fullback'
+import { ProductDto } from '@/domain/dto/product.dto'
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<ProductDto>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -55,7 +55,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => (
       <ImageWithFallback
         src={row.getValue('imageUrl')}
-        alt={row.original.name}
+        alt={row.original.name ?? 'Product Image'}
         className="h-10 w-10 rounded-md object-cover"
         width={80}
         height={80}

@@ -8,7 +8,7 @@ import { ReactQueryProvider } from '@/components/providers/react-query.provider'
 import { DirectionProvider } from '@/components/providers/direction-provider'
 import { I18nProvider } from '@/components/providers/i18n.provider'
 import '@/styles/index.css'
-import { getServerCookie } from '@/lib/cookies/server'
+import { getCookie } from '@/lib/cookies'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,8 +30,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const dir = (await getServerCookie<'ltr' | 'rtl'>('dir')) ?? 'ltr'
-  const lang = (await getServerCookie<'en' | 'ar'>('dir')) ?? 'ltr'
+  const dir = getCookie<'ltr' | 'rtl'>('dir') ?? 'ltr'
+  const lang = getCookie<'en' | 'ar'>('dir') ?? 'ltr'
 
   return (
     <html lang={lang} dir={dir}>

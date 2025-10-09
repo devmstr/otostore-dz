@@ -60,7 +60,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       setLanguage(cookieLang)
       i18n.changeLanguage(cookieLang)
     }
-  }, [])
+  }, [language])
 
   const changeLanguage = (lang: Language) => {
     setLanguage(lang)

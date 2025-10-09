@@ -18,18 +18,18 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
-import { categories } from '../data/data.filters'
-import { productSchema } from '../data/schema'
+import { categories } from '../_seed/data.filters'
 import { useProductDialogs } from './data-table-provider'
+import { ProductSchema, type ProductDto } from '@/domain/dto/product.dto'
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>
+interface DataTableRowActionsProps<ProductDto> {
+  row: Row<ProductDto>
 }
 
-export function DataTableRowActions<TData>({
+export function DataTableRowActions<ProductDto>({
   row
-}: DataTableRowActionsProps<TData>) {
-  const product = productSchema.parse(row.original)
+}: DataTableRowActionsProps<ProductDto>) {
+  const product = ProductSchema.parse(row.original)
   const { setOpen, setCurrentRow } = useProductDialogs()
   return (
     <DropdownMenu>
@@ -58,7 +58,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={product.category}>
+            <DropdownMenuRadioGroup value={product.category as string}>
               {categories.map((cat) => (
                 <DropdownMenuRadioItem key={cat.value} value={cat.value}>
                   {cat.label}

@@ -1,15 +1,15 @@
 'use client'
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Product } from '../data/schema'
+import { type ProductDto } from '@/domain/dto/product.dto'
 
-type TasksDialogType = 'create' | 'update' | 'delete' | 'import'
+type ProductDialogType = 'create' | 'update' | 'delete' | 'import'
 
 type ProductDialogsContextType = {
-  open: TasksDialogType | null
-  setOpen: (str: TasksDialogType | null) => void
-  currentRow: Product | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Product | null>>
+  open: ProductDialogType | null
+  setOpen: (str: ProductDialogType | null) => void
+  currentRow: ProductDto | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<ProductDto | null>>
 }
 
 const ProductDialogsContext =
@@ -20,8 +20,8 @@ export function ProductDialogsProvider({
 }: {
   children: React.ReactNode
 }) {
-  const [open, setOpen] = useDialogState<TasksDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Product | null>(null)
+  const [open, setOpen] = useDialogState<ProductDialogType>(null)
+  const [currentRow, setCurrentRow] = useState<ProductDto | null>(null)
 
   return (
     <ProductDialogsContext value={{ open, setOpen, currentRow, setCurrentRow }}>

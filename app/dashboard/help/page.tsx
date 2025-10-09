@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation'
 
-interface Props {}
-
-const Page: React.FC<Props> = ({}: Props) => {
+const Page: React.FC = () => {
   return notFound()
 }
 

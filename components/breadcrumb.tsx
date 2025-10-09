@@ -12,10 +12,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import { HtmlHTMLAttributes } from 'react'
 
-interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {}
-
-export function DynamicBreadcrumb(props: Props) {
+export function DynamicBreadcrumb(props: HtmlHTMLAttributes<HTMLDivElement>) {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
 

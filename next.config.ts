@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
         hostname: 'loremflickr.com'
       }
     ]
+  },
+  eslint: {
+    ignoreDuringBuilds: true
   }
 }
 

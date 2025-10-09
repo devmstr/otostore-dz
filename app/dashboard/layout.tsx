@@ -2,7 +2,6 @@ import { AppSidebar } from '@/components/layout/app-sidebar'
 import { useDirection } from '@/components/providers/direction-provider'
 import { SearchProvider } from '@/components/providers/search-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { getServerCookie } from '@/lib/cookies/server'
 import { cn } from '@/lib/utils'
 import { Header } from '@/components/layout/header'
 import { TopNav } from '@/components/layout/top-nav'
@@ -11,6 +10,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { LanguageSwitch } from '@/components/lanuage-switch'
 import { DynamicBreadcrumb } from '@/components/breadcrumb'
+import { getCookie } from '@/lib/cookies'
 
 interface Props {
   children: React.ReactNode
@@ -45,7 +45,7 @@ const topNav = [
 
 const Layout: React.FC<Props> = async ({ children }: Props) => {
   const defaultOpen =
-    Boolean(await getServerCookie<'true' | 'false'>('sidebar_state')) ?? false
+    Boolean(getCookie<'true' | 'false'>('sidebar_state')) ?? false
   return (
     <SearchProvider>
       <SidebarProvider defaultOpen={defaultOpen}>

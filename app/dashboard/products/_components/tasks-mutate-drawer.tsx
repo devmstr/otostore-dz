@@ -24,8 +24,8 @@ import {
   SheetTitle
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { type Product } from '../data/schema'
-import { categories, availability } from '../data/data.filters'
+import { type Product } from '../_seed/schema'
+import { categories, availability } from '../_seed/data.filters'
 import Uploader from '@/components/uplaoder'
 
 type ProductMutateDrawerProps = {

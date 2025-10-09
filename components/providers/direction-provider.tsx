@@ -28,7 +28,7 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     if (cookieDir && cookieDir !== dir) {
       _setDir(cookieDir)
     }
-  }, [])
+  }, [dir])
 
   // Apply dir attribute to <html>
   useEffect(() => {
