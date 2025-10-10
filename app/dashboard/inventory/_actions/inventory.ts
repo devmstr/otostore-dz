@@ -4,6 +4,22 @@ import { container } from "@/domain/di/container"
 import { requireAuth, requireRole, createAuditLog } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
+export async function getInventoryAction(params?: {
+  page?: number
+  pageSize?: number
+  search?: string
+  category?: string
+  stockStatus?: string
+}) {
+  await requireAuth()
+  return container.productService.getProducts({
+    search: params?.search,
+    category: params?.category,
+    page: params?.page,
+    pageSize: params?.pageSize,
+  })
+}
+
 export async function getLowStockProductsAction() {
   await requireAuth()
   return container.inventoryService.getLowStockProducts()
