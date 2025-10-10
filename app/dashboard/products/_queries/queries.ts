@@ -6,7 +6,15 @@ export const getAllProductQueryOption = (params: URLSearchParams) => {
   const page = Number(params.get('page')) || 1
   const pageSize = Number(params.get('pageSize')) || 25
   const search = params.get('search') || undefined
-  const category = params.get('category') || undefined
+  const category = params.get('category') as
+    | 'electronics'
+    | 'clothing'
+    | 'books'
+    | 'furniture'
+    | 'sports'
+    | 'food'
+    | 'toys'
+    | undefined
   const availability = params.get('availability') || undefined
   const price = params.get('price') as
     | 'budget'
@@ -26,7 +34,7 @@ export const getAllProductQueryOption = (params: URLSearchParams) => {
         search,
         category,
         availability,
-        priceRange: price
+        price
       })
   })
 }

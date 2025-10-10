@@ -1,48 +1,92 @@
-"use client"
+'use client'
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import type { Table } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DataTableViewOptions } from "./data-table-view-options"
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { debtTypes, debtStatuses } from "../_seed/data.filters"
-import { useDebtDialogs } from "./data-table-provider"
-import { PlusIcon } from "lucide-react"
-import type { DebtDto } from "@/domain/dto/debt.dto"
+import { Cross2Icon } from '@radix-ui/react-icons'
+import type { Table } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { DataTableViewOptions } from './data-table-view-options'
+import { DataTableFacetedFilter } from './data-table-faceted-filter'
+import { debtTypes, debtStatuses } from '../_seed/data.filters'
+import { useDebtDialogs } from './data-table-provider'
+import { PlusIcon } from 'lucide-react'
+import type { DebtDto } from '@/domain/dto/debt.dto'
+import React from 'react'
+import { debounce } from 'lodash'
 
-interface DataTableToolbarProps {
-  table: Table<DebtDto>
+interface DataTableToolbarProps<TData> {
+  table: Table<TData>
 }
 
-export function DataTableToolbar({ table }: DataTableToolbarProps) {
+export function DataTableToolbar<TData>({
+  table
+}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   const { setOpen } = useDebtDialogs()
+
+  // --- State
+  const [searchValue, setSearchValue] = React.useState(
+    (table.getColumn('description')?.getFilterValue() as string) ?? ''
+  )
+
+  // --- Debounce logic (fires only after user stops typing)
+  const debouncedSetFilter = React.useMemo(
+    () =>
+      debounce((val: string) => {
+        table.getColumn('description')?.setFilterValue(val || undefined)
+      }, 500),
+    [table]
+  )
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchValue(value)
+    debouncedSetFilter(value)
+  }
+
+  // Clean up debounce on unmount
+  React.useEffect(() => {
+    return () => {
+      debouncedSetFilter.cancel()
+    }
+  }, [debouncedSetFilter])
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Search by entity name..."
-          value={(table.getColumn("entityName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("entityName")?.setFilterValue(event.target.value)}
+          placeholder="Search products..."
+          value={searchValue}
+          onChange={handleSearchChange}
           className="h-8 w-[150px] lg:w-[250px]"
+          aria-label="Search products"
         />
-        {table.getColumn("type") && (
-          <DataTableFacetedFilter column={table.getColumn("type")} title="Type" options={debtTypes} />
+        {table.getColumn('type') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('type')}
+            title="Type"
+            options={debtTypes}
+          />
         )}
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={debtStatuses} />
+        {table.getColumn('status') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('status')}
+            title="Status"
+            options={debtStatuses}
+          />
         )}
         {isFiltered && (
-          <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">
+          <Button
+            variant="ghost"
+            onClick={() => table.resetColumnFilters()}
+            className="h-8 px-2 lg:px-3"
+          >
             Reset
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
       <div className="flex items-center space-x-2">
-        <Button size="sm" onClick={() => setOpen("create")} className="h-8">
+        <Button size="sm" onClick={() => setOpen('create')} className="h-8">
           <PlusIcon className="mr-2 h-4 w-4" />
           Add Debt/Loan
         </Button>
