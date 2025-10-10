@@ -12,6 +12,7 @@ export class ProductService {
     priceRange?: string
     page?: number
     pageSize?: number
+    stock?: number
   }) {
     return this.repository.findMany(query)
   }

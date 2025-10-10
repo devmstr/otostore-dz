@@ -11,6 +11,7 @@ export class ProductRepository {
     priceRange?: string
     page?: number
     pageSize?: number
+    stock?: number
   }): Promise<{ data: ProductDto[]; total: number }> {
     const {
       search,
@@ -18,7 +19,8 @@ export class ProductRepository {
       availability,
       priceRange,
       page = 1,
-      pageSize = 10
+      pageSize = 10,
+      stock = 0
     } = params ?? {}
     const skip = (page - 1) * pageSize
 
@@ -31,7 +33,8 @@ export class ProductRepository {
       }),
       ...(category && { category }),
       ...(availability && { availability }),
-      ...(priceRange && { priceRange })
+      ...(priceRange && { priceRange }),
+      ...(stock && { stock: { gte: stock } })
     }
 
     const [data, total] = await Promise.all([

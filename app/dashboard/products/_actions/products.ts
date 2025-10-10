@@ -17,7 +17,8 @@ const getProductsSchema = z.object({
   search: z.string().optional(),
   category: z.string().optional(),
   availability: z.string().optional(),
-  price: z.string().optional()
+  price: z.string().optional(),
+  stock: z.number().optional()
 })
 
 const UpdateProductSchema = CreateProductSchema.partial()
