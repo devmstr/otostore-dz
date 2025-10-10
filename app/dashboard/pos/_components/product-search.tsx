@@ -100,7 +100,7 @@ export function ProductSearch({
               disabled={product.stock === 0}
               className="group h-48 flex flex-col gap-2"
             >
-              <h3 className="font-medium">{product.name}</h3>
+              <h3 className="font-medium text-wrap">{product.name}</h3>
               {product.sku && (
                 <span className="text-muted-foreground">
                   SKU: {product.sku}
