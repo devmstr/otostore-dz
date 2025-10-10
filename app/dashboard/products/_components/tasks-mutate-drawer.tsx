@@ -1,19 +1,12 @@
-'use client'
+"use client"
 
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/lib/show-submitted-data'
-import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { showSubmittedData } from "@/lib/show-submitted-data"
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Sheet,
   SheetClose,
@@ -21,13 +14,13 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet'
-import { SelectDropdown } from '@/components/select-dropdown'
-import { type ProductDto } from '@/domain/dto/product.dto'
-import { categories, availability } from '../_seed/data.filters'
-import Uploader from '@/components/uplaoder'
-import { nullToUndefined } from '@/lib/utils'
+  SheetTitle,
+} from "@/components/ui/sheet"
+import { SelectDropdown } from "@/components/select-dropdown"
+import type { ProductDto } from "@/domain/dto/product.dto"
+import { categories, availability, priceRanges } from "../_seed/data.filters"
+import Uploader from "@/components/uplaoder"
+import { nullToUndefined } from "@/lib/utils"
 
 type ProductMutateDrawerProps = {
   open: boolean
@@ -36,31 +29,29 @@ type ProductMutateDrawerProps = {
 }
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required.'),
-  price: z.number().positive('Price must be greater than 0.'),
-  category: z.string().min(1, 'Please select a category.'),
-  availability: z.string().min(1, 'Please select availability.'),
-  imageUrl: z.string().optional()
+  name: z.string().min(1, "Name is required."),
+  price: z.number().positive("Price must be greater than 0."),
+  category: z.string().min(1, "Please select a category."),
+  availability: z.string().min(1, "Please select availability."),
+  priceRange: z.enum(["budget", "standard", "premium"]).optional(),
+  imageUrl: z.string().optional(),
 })
 
 type ProductForm = z.infer<typeof formSchema>
 
-export function ProductsMutateDrawer({
-  open,
-  onOpenChange,
-  currentRow
-}: ProductMutateDrawerProps) {
+export function ProductsMutateDrawer({ open, onOpenChange, currentRow }: ProductMutateDrawerProps) {
   const isUpdate = !!currentRow
 
   const form = useForm<ProductForm>({
     resolver: zodResolver(formSchema),
     defaultValues: nullToUndefined<ProductDto>(currentRow) ?? {
-      name: '',
+      name: "",
       price: 0,
-      category: '',
-      availability: '',
-      imageUrl: ''
-    }
+      category: "",
+      availability: "",
+      priceRange: undefined,
+      imageUrl: "",
+    },
   })
 
   const onSubmit = (data: ProductForm) => {
@@ -80,11 +71,11 @@ export function ProductsMutateDrawer({
     >
       <SheetContent className="flex flex-col">
         <SheetHeader className="text-start">
-          <SheetTitle>{isUpdate ? 'Update' : 'Create'} Product</SheetTitle>
+          <SheetTitle>{isUpdate ? "Update" : "Create"} Product</SheetTitle>
           <SheetDescription>
             {isUpdate
-              ? 'Update the product by providing necessary info.'
-              : 'Add a new product by providing necessary info.'}
+              ? "Update the product by providing necessary info."
+              : "Add a new product by providing necessary info."}
             Click save when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
@@ -123,12 +114,8 @@ export function ProductsMutateDrawer({
                       step="0.01"
                       {...field}
                       placeholder="Enter price"
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value ? parseFloat(e.target.value) : ''
-                        )
-                      }
+                      value={field.value ?? ""}
+                      onChange={(e) => field.onChange(e.target.value ? Number.parseFloat(e.target.value) : "")}
                     />
                   </FormControl>
                   <FormMessage />
@@ -166,6 +153,24 @@ export function ProductsMutateDrawer({
                     onValueChange={field.onChange}
                     placeholder="Select availability"
                     items={availability}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Price Range */}
+            <FormField
+              control={form.control}
+              name="priceRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price Range</FormLabel>
+                  <SelectDropdown
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Select price range"
+                    items={priceRanges}
                   />
                   <FormMessage />
                 </FormItem>

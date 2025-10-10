@@ -1,22 +1,30 @@
-import { faker } from '@faker-js/faker'
-import { prisma } from '@/domain/database/db-service'
-import { categories, availability, priceRanges } from './data.filters'
-import { ProductDto } from '@/domain/dto/product.dto'
+import { faker } from "@faker-js/faker"
+import { prisma } from "@/domain/database/db-service"
+import { categories, availability, priceRanges } from "./data.filters"
 
-const createProduct = (): ProductDto => ({
-  id: BigInt(`613${faker.number.int({ min: 100000000, max: 999999999 })}`),
-  name: faker.commerce.productName(),
-  description: faker.commerce.productDescription(),
-  category: faker.helpers.arrayElement(categories).value,
-  availability: faker.helpers.arrayElement(availability).value,
-  priceRange: faker.helpers.arrayElement(priceRanges).value,
-  price: Number(faker.commerce.price({ min: 5, max: 500 })),
-  stock: faker.number.int({ min: 0, max: 200 }),
-  imageUrl: faker.image.urlLoremFlickr({ category: 'product' })
-})
+const createProduct = () => {
+  const cost = faker.number.float({ min: 5, max: 300, fractionDigits: 2 })
+  const price = faker.number.float({ min: cost * 1.2, max: cost * 2.5, fractionDigits: 2 })
+
+  return {
+    name: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    sku: faker.string.alphanumeric(8).toUpperCase(),
+    barcode: faker.string.numeric(13),
+    category: faker.helpers.arrayElement(categories).value,
+    availability: faker.helpers.arrayElement(availability).value,
+    priceRange: faker.helpers.arrayElement(priceRanges).value,
+    price: price,
+    cost: cost,
+    stock: faker.number.int({ min: 0, max: 200 }),
+    minStock: faker.number.int({ min: 5, max: 20 }),
+    maxStock: faker.number.int({ min: 100, max: 500 }),
+    imageUrl: faker.image.urlLoremFlickr({ category: "product" }),
+  }
+}
 
 async function main() {
-  console.log('🌱 Starting product seeding...')
+  console.log("🌱 Starting product seeding...")
 
   const products = Array.from({ length: 100 }, createProduct)
 
@@ -26,12 +34,12 @@ async function main() {
 
     const result = await prisma.product.createMany({
       data: products,
-      skipDuplicates: true
+      skipDuplicates: true,
     })
 
     console.log(`✅ Successfully seeded ${result.count} products.`)
   } catch (error) {
-    console.error('❌ Seeding failed:', error)
+    console.error("❌ Seeding failed:", error)
     process.exit(1)
   } finally {
     await prisma.$disconnect()

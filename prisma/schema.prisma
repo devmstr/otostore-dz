@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -70,30 +70,35 @@ model Supplier {
 
   // Relations
   products Product[]
-  Debt     Debt[]
 
   @@map("suppliers")
 }
 
+enum PriceRange {
+  budget
+  standard
+  premium
+}
+
 model Product {
-  id           BigInt    @id @default(autoincrement())
+  id           BigInt   @id @default(autoincrement())
   name         String
   description  String?
-  sku          String?   @unique
-  barcode      String?   @unique
+  sku          String?  @unique
+  barcode      String?  @unique
   price        Float
   cost         Float?
   category     String
-  availability String    @default("in_stock")
-  priceRange   String?
-  stock        Int       @default(0)
-  minStock     Int       @default(10) // Alert threshold
+  availability String   @default("in_stock")
+  priceRange   PriceRange?
+  stock        Int      @default(0)
+  minStock     Int      @default(10) // Alert threshold
   maxStock     Int?
   imageUrl     String?
   supplierId   BigInt?
   supplier     Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
   orderItems     OrderItem[]
@@ -105,22 +110,22 @@ model Product {
 }
 
 model Order {
-  id            BigInt        @id @default(autoincrement())
-  orderNumber   String        @unique
-  customerId    BigInt?
-  customer      Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  userId        String
-  user          User          @relation(fields: [userId], references: [id])
-  status        OrderStatus   @default(PENDING)
-  paymentMethod String? // cash, card, mobile
-  paymentStatus PaymentStatus @default(PENDING)
-  subtotal      Float
-  tax           Float         @default(0)
-  discount      Float         @default(0)
-  total         Float
-  notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id              BigInt      @id @default(autoincrement())
+  orderNumber     String      @unique
+  customerId      BigInt?
+  customer        Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          OrderStatus @default(PENDING)
+  paymentMethod   String?     // cash, card, mobile
+  paymentStatus   PaymentStatus @default(PENDING)
+  subtotal        Float
+  tax             Float       @default(0)
+  discount        Float       @default(0)
+  total           Float
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   // Relations
   items OrderItem[]
@@ -154,7 +159,7 @@ model OrderItem {
   productId BigInt
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  price     Float // Price at time of order
+  price     Float   // Price at time of order
   discount  Float   @default(0)
   subtotal  Float
 
@@ -164,15 +169,15 @@ model OrderItem {
 }
 
 model StockMovement {
-  id        BigInt       @id @default(autoincrement())
-  productId BigInt
-  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  type      MovementType
-  quantity  Int // Positive for IN, negative for OUT
-  reason    String?
-  reference String? // Order number, transfer ID, etc.
-  notes     String?
-  createdAt DateTime     @default(now())
+  id          BigInt           @id @default(autoincrement())
+  productId   BigInt
+  product     Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type        MovementType
+  quantity    Int              // Positive for IN, negative for OUT
+  reason      String?
+  reference   String?          // Order number, transfer ID, etc.
+  notes       String?
+  createdAt   DateTime         @default(now())
 
   @@index([productId])
   @@index([type])
@@ -181,22 +186,22 @@ model StockMovement {
 }
 
 enum MovementType {
-  PURCHASE // Stock received from supplier
-  SALE // Stock sold to customer
-  ADJUSTMENT // Manual adjustment
-  RETURN // Customer return
-  DAMAGE // Damaged goods
-  TRANSFER // Transfer between locations
+  PURCHASE      // Stock received from supplier
+  SALE          // Stock sold to customer
+  ADJUSTMENT    // Manual adjustment
+  RETURN        // Customer return
+  DAMAGE        // Damaged goods
+  TRANSFER      // Transfer between locations
 }
 
 model AuditLog {
   id        BigInt   @id @default(autoincrement())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  action    String // e.g., "CREATE_PRODUCT", "UPDATE_ORDER"
-  entity    String // e.g., "Product", "Order"
-  entityId  String? // ID of the affected entity
-  details   Json? // Additional details about the action
+  action    String   // e.g., "CREATE_PRODUCT", "UPDATE_ORDER"
+  entity    String   // e.g., "Product", "Order"
+  entityId  String?  // ID of the affected entity
+  details   Json?    // Additional details about the action
   createdAt DateTime @default(now())
 
   @@index([userId])
@@ -205,22 +210,22 @@ model AuditLog {
 }
 
 model Debt {
-  id          BigInt     @id @default(autoincrement())
-  type        DebtType // CUSTOMER_DEBT or SUPPLIER_DEBT
-  customerId  BigInt?
-  customer    Customer?  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  supplierId  BigInt?
-  supplier    Supplier?  @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  orderId     BigInt? // Reference to related order if applicable
-  amount      Float
-  paid        Float      @default(0)
-  remaining   Float // Calculated: amount - paid
-  status      DebtStatus @default(PENDING)
-  dueDate     DateTime?
-  description String?
-  notes       String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            BigInt      @id @default(autoincrement())
+  type          DebtType    // CUSTOMER_DEBT or SUPPLIER_DEBT
+  customerId    BigInt?
+  customer      Customer?   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  supplierId    BigInt?
+  supplier      Supplier?   @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  orderId       BigInt?     // Reference to related order if applicable
+  amount        Float
+  paid          Float       @default(0)
+  remaining     Float       // Calculated: amount - paid
+  status        DebtStatus  @default(PENDING)
+  dueDate       DateTime?
+  description   String?
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   // Relations
   payments DebtPayment[]
@@ -233,8 +238,8 @@ model Debt {
 }
 
 enum DebtType {
-  CUSTOMER_DEBT // Money owed by customer to store
-  SUPPLIER_DEBT // Money owed by store to supplier
+  CUSTOMER_DEBT  // Money owed by customer to store
+  SUPPLIER_DEBT  // Money owed by store to supplier
 }
 
 enum DebtStatus {
@@ -245,14 +250,14 @@ enum DebtStatus {
 }
 
 model DebtPayment {
-  id        BigInt   @id @default(autoincrement())
-  debtId    BigInt
-  debt      Debt     @relation(fields: [debtId], references: [id], onDelete: Cascade)
-  amount    Float
-  method    String? // cash, card, bank transfer
-  reference String? // Payment reference number
-  notes     String?
-  createdAt DateTime @default(now())
+  id          BigInt   @id @default(autoincrement())
+  debtId      BigInt
+  debt        Debt     @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  amount      Float
+  method      String?  // cash, card, bank transfer
+  reference   String?  // Payment reference number
+  notes       String?
+  createdAt   DateTime @default(now())
 
   @@index([debtId])
   @@map("debt_payments")
