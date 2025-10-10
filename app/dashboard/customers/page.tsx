@@ -1,28 +1,25 @@
-import { Suspense } from "react"
-import { CustomersTable } from "./_components/customers-table"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { CreateCustomerDialog } from "./_components/create-customer-dialog"
+import type { Metadata } from "next"
+import { columns } from "./_components/columns"
+import { DataTable } from "./_components/data-table"
+import { CustomerDialogsProvider } from "./_components/data-table-provider"
+import { CustomerDialogs } from "./_components/data-table-dialogs"
 
-export default function CustomersPage() {
+export const metadata: Metadata = {
+  title: "Customers",
+  description: "Manage customer profiles and loyalty",
+}
+
+export default async function CustomersPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <CustomerDialogsProvider>
+      <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
           <p className="text-muted-foreground mt-1">Manage customer profiles and loyalty</p>
         </div>
-        <CreateCustomerDialog>
-          <Button>
-            <Plus className="h-4 w-4" />
-            Add Customer
-          </Button>
-        </CreateCustomerDialog>
+        <DataTable columns={columns} />
       </div>
-
-      <Suspense fallback={<div>Loading customers...</div>}>
-        <CustomersTable />
-      </Suspense>
-    </div>
+      <CustomerDialogs />
+    </CustomerDialogsProvider>
   )
 }

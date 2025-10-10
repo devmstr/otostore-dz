@@ -1,28 +1,25 @@
-import { Suspense } from 'react'
-import { OrdersTable } from './_components/orders-table'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
-import Link from 'next/link'
+import type { Metadata } from "next"
+import { columns } from "./_components/columns"
+import { DataTable } from "./_components/data-table"
+import { OrderDialogsProvider } from "./_components/data-table-provider"
+import { OrderDialogs } from "./_components/data-table-dialogs"
 
-export default function OrdersPage() {
+export const metadata: Metadata = {
+  title: "Orders",
+  description: "Manage customer orders and track sales",
+}
+
+export default async function OrdersPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <OrderDialogsProvider>
+      <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage customer orders and track sales
-          </p>
+          <p className="text-muted-foreground mt-1">Manage customer orders and track sales</p>
         </div>
-        <Link href="/dashboard/orders/new">
-          <Button>
-            <Plus className="h-4 w-4" />
-            New Order
-          </Button>
-        </Link>
+        <DataTable columns={columns} />
       </div>
-
-      <OrdersTable />
-    </div>
+      <OrderDialogs />
+    </OrderDialogsProvider>
   )
 }

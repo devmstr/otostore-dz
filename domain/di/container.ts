@@ -8,6 +8,10 @@ import { InventoryRepository } from "../repositories/inventory.repository"
 import { InventoryService } from "../services/inventory.service"
 import { CustomerRepository } from "../repositories/customer.repository"
 import { CustomerService } from "../services/customer.service"
+import { SupplierRepository } from "../repositories/supplier.repository"
+import { SupplierService } from "../services/supplier.service"
+import { DebtRepository } from "../repositories/debt.repository"
+import { DebtService } from "../services/debt.service"
 
 /**
  * A simple, type-safe DI container
@@ -22,6 +26,10 @@ class DIContainer implements Container {
   inventoryService: InventoryService
   customerRepository: CustomerRepository
   customerService: CustomerService
+  supplierRepository: SupplierRepository
+  supplierService: SupplierService
+  debtRepository: DebtRepository
+  debtService: DebtService
 
   constructor() {
     // Instantiate and wire dependencies manually
@@ -36,6 +44,12 @@ class DIContainer implements Container {
 
     this.customerRepository = new CustomerRepository(prisma)
     this.customerService = new CustomerService(this.customerRepository)
+
+    this.supplierRepository = new SupplierRepository(prisma)
+    this.supplierService = new SupplierService(this.supplierRepository)
+
+    this.debtRepository = new DebtRepository(prisma)
+    this.debtService = new DebtService(this.debtRepository)
   }
 }
 
