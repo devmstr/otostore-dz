@@ -58,3 +58,32 @@ export function getPageNumbers(currentPage: number, totalPages: number) {
 
   return rangeWithDots
 }
+
+// lib/null-to-undefined.ts
+export function nullToUndefined<T extends Record<string, any> | undefined>(
+  obj: T | undefined
+): T extends undefined
+  ? undefined
+  : { [K in keyof T]: Exclude<T[K], null> | undefined } {
+  if (obj === undefined) return undefined as any
+
+  const result: Partial<{ [K in keyof T]: any }> = {}
+
+  for (const key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue
+
+    const val = obj[key]
+
+    if (val === null) {
+      result[key as keyof T] = undefined
+    } else if (val instanceof Date) {
+      result[key as keyof T] = val
+    } else if (val && typeof val === 'object' && !Array.isArray(val)) {
+      result[key as keyof T] = nullToUndefined(val)
+    } else {
+      result[key as keyof T] = val
+    }
+  }
+
+  return result as any
+}

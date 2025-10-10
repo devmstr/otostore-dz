@@ -1,14 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-import { HelpCircle } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { FileDropzone } from './dropzone'
 import { FileList } from './file-list'

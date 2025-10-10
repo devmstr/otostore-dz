@@ -24,14 +24,15 @@ import {
   SheetTitle
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { type Product } from '../_seed/schema'
+import { type ProductDto } from '@/domain/dto/product.dto'
 import { categories, availability } from '../_seed/data.filters'
 import Uploader from '@/components/uplaoder'
+import { nullToUndefined } from '@/lib/utils'
 
 type ProductMutateDrawerProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Product
+  currentRow?: ProductDto
 }
 
 const formSchema = z.object({
@@ -39,7 +40,7 @@ const formSchema = z.object({
   price: z.number().positive('Price must be greater than 0.'),
   category: z.string().min(1, 'Please select a category.'),
   availability: z.string().min(1, 'Please select availability.'),
-  imageUrl: z.url('Must be a valid URL').optional()
+  imageUrl: z.string().optional()
 })
 
 type ProductForm = z.infer<typeof formSchema>
@@ -53,7 +54,7 @@ export function ProductsMutateDrawer({
 
   const form = useForm<ProductForm>({
     resolver: zodResolver(formSchema),
-    defaultValues: currentRow ?? {
+    defaultValues: nullToUndefined<ProductDto>(currentRow) ?? {
       name: '',
       price: 0,
       category: '',

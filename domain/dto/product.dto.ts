@@ -9,8 +9,8 @@ export const ProductSchema = z.object({
   availability: z.string().nullable(),
   priceRange: z.string().nullable(),
   stock: z.number().int().nonnegative().nullable(),
-  imageUrl: z.url().nullable(),
-  createdAt: z.date().optional()
+  imageUrl: z.string().nullable(),
+  createdAt: z.date().nullable()
 })
 
 export type ProductDto = z.infer<typeof ProductSchema>

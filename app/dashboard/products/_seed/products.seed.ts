@@ -1,21 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '@/domain/database/db-service'
 import { categories, availability, priceRanges } from './data.filters'
+import { ProductDto } from '@/domain/dto/product.dto'
 
-interface ProductSeed {
-  id: number
-  name: string
-  description: string
-  category: string
-  availability: string
-  priceRange: string
-  price: number
-  stock: number
-  imageUrl: string
-}
-
-const createProduct = (): ProductSeed => ({
-  id: Number(`613${faker.number.int({ min: 100000000, max: 999999999 })}`),
+const createProduct = (): ProductDto => ({
+  id: BigInt(`613${faker.number.int({ min: 100000000, max: 999999999 })}`),
   name: faker.commerce.productName(),
   description: faker.commerce.productDescription(),
   category: faker.helpers.arrayElement(categories).value,
