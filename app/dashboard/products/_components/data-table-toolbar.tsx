@@ -53,7 +53,7 @@ export function DataTableToolbar<TData>({
 
   // --- UI
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-wrap space-y-2 items-center justify-between">
       {/* Left Section: Filters */}
       <div className="flex flex-1 items-center gap-2">
         <Input
@@ -105,7 +105,7 @@ export function DataTableToolbar<TData>({
       </div>
 
       {/* Right Section: View options and actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <DataTableViewOptions table={table} />
         <Button variant="outline" onClick={() => setOpen('import')} size="sm">
           Import

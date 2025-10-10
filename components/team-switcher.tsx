@@ -18,7 +18,6 @@ import {
 import * as LucideIcons from 'lucide-react'
 import { ChevronsUpDown, Plus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { SidebarData } from './types'
 
 export function TeamSwitcher({ teams }: { teams: SidebarData['teams'] }) {
   const { isMobile } = useSidebar()
@@ -36,7 +35,7 @@ export function TeamSwitcher({ teams }: { teams: SidebarData['teams'] }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg -translate-x-2">
                 {ActiveIcon && <ActiveIcon className="size-4" />}
               </div>
               <div className="grid flex-1 text-start text-sm leading-tight">

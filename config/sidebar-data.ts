@@ -17,7 +17,11 @@ export const sidebarData: SidebarData = {
       title: 'General',
       items: [
         { title: 'Dashboard', url: '/dashboard', icon: 'LayoutDashboard' },
-        { title: 'Products', url: '/dashboard/products', icon: 'Package' }
+        { title: 'Products', url: '/dashboard/products', icon: 'Package' },
+        { title: 'Customers', url: '/dashboard/customers', icon: 'Users' },
+        { title: 'inventory', url: '/dashboard/inventory', icon: 'Boxes' },
+        { title: 'Orders', url: '/dashboard/orders', icon: 'List' },
+        { title: 'Users', url: '/dashboard/users', icon: 'Users' }
       ]
     },
     {

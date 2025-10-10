@@ -20,9 +20,9 @@ export function AppSidebar() {
     <Sidebar
       side={dir == 'ltr' ? 'left' : 'right'}
       collapsible={'icon'}
-      variant={'inset'}
+      variant={'sidebar'}
     >
-      <SidebarHeader>
+      <SidebarHeader className="">
         <TeamSwitcher teams={sidebarData.teams} />
 
         {/* Replace <TeamSwitch /> with the following <AppTitle />
@@ -34,7 +34,7 @@ export function AppSidebar() {
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="">
         <NavUser user={sidebarData.user} />
       </SidebarFooter>
       <SidebarRail />

@@ -10,6 +10,7 @@ import { DirectionProvider } from '@/components/providers/direction-provider'
 import { I18nProvider } from '@/components/providers/i18n.provider'
 import '@/styles/index.css'
 import { getCookie } from '@/lib/cookies'
+import { ClerkProvider } from '@clerk/nextjs'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -37,24 +38,26 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir}>
-      <ReactQueryProvider>
-        <ThemeProvider>
-          <DirectionProvider>
-            <I18nProvider>
-              <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-              >
-                <NavigationProgress />
-                {children}
-                <Toaster duration={5000} />
-                {process.env.Mode === 'development' && (
-                  <ReactQueryDevtools buttonPosition="bottom-left" />
-                )}
-              </body>
-            </I18nProvider>
-          </DirectionProvider>
-        </ThemeProvider>
-      </ReactQueryProvider>
+      <ClerkProvider>
+        <ReactQueryProvider>
+          <ThemeProvider>
+            <DirectionProvider>
+              <I18nProvider>
+                <body
+                  className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                >
+                  <NavigationProgress />
+                  {children}
+                  <Toaster duration={5000} />
+                  {process.env.Mode === 'development' && (
+                    <ReactQueryDevtools buttonPosition="bottom-left" />
+                  )}
+                </body>
+              </I18nProvider>
+            </DirectionProvider>
+          </ThemeProvider>
+        </ReactQueryProvider>
+      </ClerkProvider>
     </html>
   )
 }

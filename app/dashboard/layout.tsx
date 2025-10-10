@@ -74,7 +74,7 @@ const Layout: React.FC<Props> = async ({ children }: Props) => {
               <ProfileDropdown />
             </div>
           </Header>
-          {children}
+          <div className="container  py-8">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </SearchProvider>
