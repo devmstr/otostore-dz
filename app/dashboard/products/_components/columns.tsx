@@ -83,7 +83,6 @@ export const columns: ColumnDef<ProductDto>[] = [
       const category = categories.find(
         (c) => c.value === row.getValue('category')
       )
-
       if (!category) return null
 
       return (
