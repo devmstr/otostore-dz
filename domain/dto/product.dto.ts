@@ -11,7 +11,7 @@ export const AvailabilityEnum = z.enum(AVAILABILITY_STATUS)
 
 export const ProductSchema = z.object({
   id: z.bigint(),
-  name: z.string().min(1, 'Product name is required').nullable(), // ← allow null
+  name: z.string().min(1, 'Product name is required'),
   description: z.string().nullable(),
   price: z.number().nonnegative().nullable(), // ← allow null
   category: CategoryEnum.default('all').nullable(),
@@ -19,7 +19,9 @@ export const ProductSchema = z.object({
   priceRange: PriceRangeEnum.default('budget').nullable(),
   stock: z.number().int().nonnegative().nullable(),
   imageUrl: z.string().nullable(),
-  createdAt: z.date().nullable()
+  supplierId: z.bigint().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date()
 })
 
 export type ProductDto = z.infer<typeof ProductSchema>

@@ -1,68 +1,58 @@
-export const categories: FilterItem[] = [
-  {
-    value: 'electronics',
-    label: 'Electronics',
-    icon: 'Cpu'
-  },
-  {
-    value: 'clothing',
-    label: 'Clothing',
-    icon: 'Shirt'
-  },
-  {
-    value: 'books',
-    label: 'Books',
-    icon: 'BookOpen'
-  },
-  {
-    value: 'furniture',
-    label: 'Furniture',
-    icon: 'Bed'
-  },
-  {
-    value: 'sports',
-    label: 'Sports',
-    icon: 'Dumbbell'
-  },
-  {
-    value: 'toys',
-    label: 'Toys',
-    icon: 'Puzzle'
-  }
-]
+import type { FilterItem } from "@/components/types"
+import {
+  PRICE_RANGES,
+  CATEGORIES,
+  AVAILABILITY_STATUS,
+  PRICE_RANGE_LABELS,
+  CATEGORY_LABELS,
+  AVAILABILITY_LABELS,
+} from "@/lib/constants/product"
 
-export const availability: FilterItem[] = [
-  {
-    value: 'in-stock',
-    label: 'In Stock',
-    icon: 'Check'
-  },
-  {
-    value: 'out-of-stock',
-    label: 'Out of Stock',
-    icon: 'X'
-  },
-  {
-    value: 'preorder',
-    label: 'Preorder',
-    icon: 'Clock'
-  }
-]
+export const categories: FilterItem[] = CATEGORIES.map((value) => ({
+  value,
+  label: CATEGORY_LABELS[value],
+  icon: getIconForCategory(value),
+}))
 
-export const priceRanges: FilterItem[] = [
-  {
-    label: 'Budget',
-    value: 'budget',
-    icon: 'HandCoins'
-  },
-  {
-    label: 'Standard',
-    value: 'standard',
-    icon: 'CreditCard'
-  },
-  {
-    label: 'Premium',
-    value: 'premium',
-    icon: 'Crown'
+export const availability: FilterItem[] = AVAILABILITY_STATUS.map((value) => ({
+  value,
+  label: AVAILABILITY_LABELS[value],
+  icon: getIconForAvailability(value),
+}))
+
+export const priceRanges: FilterItem[] = PRICE_RANGES.map((value) => ({
+  value,
+  label: PRICE_RANGE_LABELS[value],
+  icon: getIconForPriceRange(value),
+}))
+
+// Helper functions for icons
+function getIconForCategory(category: string): string {
+  const iconMap: Record<string, string> = {
+    electronics: "Cpu",
+    clothing: "Shirt",
+    books: "BookOpen",
+    furniture: "Bed",
+    sports: "Dumbbell",
+    toys: "Puzzle",
   }
-]
+  return iconMap[category] || "Package"
+}
+
+function getIconForAvailability(status: string): string {
+  const iconMap: Record<string, string> = {
+    "in-stock": "Check",
+    "out-of-stock": "X",
+    preorder: "Clock",
+  }
+  return iconMap[status] || "Package"
+}
+
+function getIconForPriceRange(range: string): string {
+  const iconMap: Record<string, string> = {
+    budget: "HandCoins",
+    standard: "CreditCard",
+    premium: "Crown",
+  }
+  return iconMap[range] || "DollarSign"
+}

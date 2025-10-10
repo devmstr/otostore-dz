@@ -194,6 +194,24 @@ export function ProductsMutateDrawer({
               )}
             />
 
+            {/* Price Range */}
+            <FormField
+              control={form.control}
+              name="priceRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price Range</FormLabel>
+                  <SelectDropdown
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Select price range"
+                    items={priceRanges}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Image URL */}
             <FormField
               control={form.control}
