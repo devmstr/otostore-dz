@@ -1,5 +1,3 @@
-import { FilterItem } from '@/components/types'
-
 export const categories: FilterItem[] = [
   {
     value: 'electronics',
