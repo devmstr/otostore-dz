@@ -20,15 +20,14 @@ import {
 
 import { categories } from '../_seed/data.filters'
 import { useProductDialogs } from './data-table-provider'
-import { ProductSchema, type ProductDto } from '@/domain/dto/product.dto'
+import { ProductSchema } from '@/domain/dto/product.dto'
+import { productSchema } from '../_seed/schema'
 
-interface DataTableRowActionsProps<ProductDto> {
-  row: Row<ProductDto>
+interface DataTableRowActionsProps<T> {
+  row: Row<T>
 }
 
-export function DataTableRowActions<ProductDto>({
-  row
-}: DataTableRowActionsProps<ProductDto>) {
+export function DataTableRowActions<T>({ row }: DataTableRowActionsProps<T>) {
   const product = ProductSchema.parse(row.original)
   const { setOpen, setCurrentRow } = useProductDialogs()
   return (

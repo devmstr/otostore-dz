@@ -1,27 +1,44 @@
-import {
-  AVAILABILITY_STATUS,
-  CATEGORIES,
-  PRICE_RANGES
-} from '@/lib/constants/product'
 import { z } from 'zod'
-
-export const PriceRangeEnum = z.enum(PRICE_RANGES)
-export const CategoryEnum = z.enum(CATEGORIES)
-export const AvailabilityEnum = z.enum(AVAILABILITY_STATUS)
 
 export const ProductSchema = z.object({
   id: z.bigint(),
   name: z.string().min(1, 'Product name is required'),
-  description: z.string().nullable(),
-  price: z.number().nonnegative().nullable(), // ← allow null
-  category: CategoryEnum.default('all').nullable(),
-  availability: AvailabilityEnum.default('in-stock').nullable(),
-  priceRange: PriceRangeEnum.default('budget').nullable(),
-  stock: z.number().int().nonnegative().nullable(),
-  imageUrl: z.string().nullable(),
-  supplierId: z.bigint().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date()
+  description: z.string().nullable().optional(),
+  sku: z.string().nullable().optional(),
+  barcode: z.string().nullable().optional(),
+  price: z.number().nonnegative('Price must be non-negative'),
+  cost: z
+    .number()
+    .nonnegative('Cost must be non-negative')
+    .nullable()
+    .optional(),
+  category: z.string().default('all').nullable().optional(),
+  availability: z.string().default('in-stock').nullable().optional(),
+  priceRange: z.string().nullable().optional(),
+  stock: z
+    .number()
+    .int()
+    .nonnegative('Stock must be non-negative')
+    .default(0)
+    .nullable()
+    .optional(),
+  minStock: z
+    .number()
+    .int()
+    .nonnegative('Min stock must be non-negative')
+    .default(10)
+    .nullable()
+    .optional(),
+  maxStock: z
+    .number()
+    .int()
+    .nonnegative('Max stock must be non-negative')
+    .nullable()
+    .optional(),
+  imageUrl: z.string().nullable().optional(),
+  supplierId: z.bigint().nullable().optional(),
+  createdAt: z.date().nullable().optional(),
+  updatedAt: z.date().nullable().optional()
 })
 
 export type ProductDto = z.infer<typeof ProductSchema>
@@ -40,4 +57,3 @@ export const UpdateProductSchema = ProductSchema.partial().required({
 
 export type UpdateProductDto = z.infer<typeof UpdateProductSchema>
 
-export type PriceRange = z.infer<typeof PriceRangeEnum>

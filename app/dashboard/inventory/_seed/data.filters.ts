@@ -1,16 +1,64 @@
-export const stockStatus = [
-  { label: "In Stock", value: "in_stock", icon: "CheckCircle" },
-  { label: "Low Stock", value: "low_stock", icon: "AlertTriangle" },
-  { label: "Out of Stock", value: "out_of_stock", icon: "XCircle" },
+import {
+  PRICE_RANGES,
+  CATEGORIES,
+  AVAILABILITY_STATUS,
+  PRICE_RANGE_LABELS,
+  CATEGORY_LABELS,
+  AVAILABILITY_LABELS
+} from '@/lib/constants/product'
+
+export const stockStatus: FilterItem[] = [
+  { label: 'In Stock', value: 'in_stock', icon: 'CheckCircle' },
+  { label: 'Low Stock', value: 'low_stock', icon: 'AlertTriangle' },
+  { label: 'Out of Stock', value: 'out_of_stock', icon: 'XCircle' }
 ]
 
-export const categories = [
-  { label: "Electronics", value: "electronics", icon: "Laptop" },
-  { label: "Clothing", value: "clothing", icon: "Shirt" },
-  { label: "Food", value: "food", icon: "Apple" },
-  { label: "Books", value: "books", icon: "Book" },
-  { label: "Toys", value: "toys", icon: "Gamepad2" },
-  { label: "Home", value: "home", icon: "Home" },
-  { label: "Sports", value: "sports", icon: "Dumbbell" },
-  { label: "Other", value: "other", icon: "Package" },
-]
+export const categories: FilterItem[] = CATEGORIES.map((value) => ({
+  value,
+  label: CATEGORY_LABELS[value],
+  icon: getIconForCategory(value)
+}))
+
+export const availability: FilterItem[] = AVAILABILITY_STATUS.map((value) => ({
+  value,
+  label: AVAILABILITY_LABELS[value],
+  icon: getIconForAvailability(value)
+}))
+
+export const priceRanges: FilterItem[] = PRICE_RANGES.map((value) => ({
+  value,
+  label: PRICE_RANGE_LABELS[value],
+  icon: getIconForPriceRange(value)
+}))
+
+// Helper functions for icons
+function getIconForCategory(category: string): LucideIcon {
+  const iconMap: Record<string, LucideIcon> = {
+    electronics: 'Cpu',
+    clothing: 'Shirt',
+    books: 'BookOpen',
+    furniture: 'BedDouble',
+    sports: 'Dumbbell',
+    toys: 'Puzzle',
+    all: 'CircleSlash2'
+  }
+  return iconMap[category] || 'Package'
+}
+
+function getIconForAvailability(status: string): LucideIcon {
+  const iconMap: Record<string, LucideIcon> = {
+    'in-stock': 'Check',
+    'out-of-stock': 'X',
+    preorder: 'Clock'
+  }
+  return iconMap[status] || 'Package'
+}
+
+function getIconForPriceRange(range: string): LucideIcon {
+  const iconMap: Record<string, LucideIcon> = {
+    budget: 'HandCoins',
+    standard: 'CreditCard',
+    premium: 'Crown'
+  }
+  return iconMap[range] || 'DollarSign'
+}

@@ -178,6 +178,6 @@ export const columns: ColumnDef<ProductDto>[] = [
 
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />
+    cell: ({ row }) => <DataTableRowActions<ProductDto> row={row} />
   }
 ]

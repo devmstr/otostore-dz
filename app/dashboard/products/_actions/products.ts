@@ -4,7 +4,11 @@ import { container } from '@/domain/di/container'
 import { requireAuth, createAuditLog } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { PRICE_RANGES } from '@/lib/constants/product'
+import {
+  AVAILABILITY_LABELS,
+  CATEGORIES,
+  PRICE_RANGES
+} from '@/lib/constants/product'
 import { CreateProductSchema } from '@/domain/dto/product.dto'
 
 const getProductsSchema = z.object({
@@ -13,17 +17,20 @@ const getProductsSchema = z.object({
   search: z.string().optional(),
   category: z.string().optional(),
   availability: z.string().optional(),
-  priceRange: z.enum(PRICE_RANGES).optional()
+  price: z.string().optional()
 })
 
 const UpdateProductSchema = CreateProductSchema.partial()
 
 export async function getProductsAction(
-  params: z.infer<typeof CreateProductSchema>
+  params: z.infer<typeof getProductsSchema>
 ) {
   await requireAuth()
   const validated = getProductsSchema.parse(params)
-  return container.productService.getProducts(validated)
+  return container.productService.getProducts({
+    ...validated,
+    priceRange: validated.price // convert the param name to
+  })
 }
 
 export async function getProductAction(id: string) {
