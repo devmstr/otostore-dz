@@ -4,6 +4,7 @@ import { container } from "@/domain/di/container"
 import { requireAuth, createAuditLog } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
+import { PRICE_RANGES } from "@/lib/constants/product"
 
 const getProductsSchema = z.object({
   page: z.number().optional(),
@@ -11,7 +12,7 @@ const getProductsSchema = z.object({
   search: z.string().optional(),
   category: z.string().optional(),
   availability: z.string().optional(),
-  priceRange: z.enum(["budget", "standard", "premium"]).optional(),
+  priceRange: z.enum(PRICE_RANGES).optional(),
 })
 
 const createProductSchema = z.object({

@@ -1,6 +1,7 @@
 import { z } from "zod"
+import { PRICE_RANGES } from "@/lib/constants/product"
 
-export const PriceRangeEnum = z.enum(["budget", "standard", "premium"])
+export const PriceRangeEnum = z.enum(PRICE_RANGES)
 
 export const ProductSchema = z.object({
   id: z.bigint(),

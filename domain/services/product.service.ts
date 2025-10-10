@@ -1,5 +1,6 @@
-import { ProductRepository } from '../repositories/product.repository'
-import { ProductDto, ProductSchema } from '../dto/product.dto'
+import type { ProductRepository } from "../repositories/product.repository"
+import { type ProductDto, ProductSchema } from "../dto/product.dto"
+import type { PriceRange } from "@/lib/constants/product"
 
 export class ProductService {
   constructor(private readonly repository: ProductRepository) {}
@@ -8,7 +9,7 @@ export class ProductService {
     search?: string
     category?: string
     availability?: string
-    priceRange?: 'budget' | 'standard' | 'premium'
+    priceRange?: PriceRange
     page?: number
     pageSize?: number
   }) {
@@ -17,7 +18,7 @@ export class ProductService {
 
   async getProduct(id: bigint) {
     const product = await this.repository.findById(id)
-    if (!product) throw new Error('Product not found')
+    if (!product) throw new Error("Product not found")
     return product
   }
 
@@ -33,6 +34,6 @@ export class ProductService {
 
   async deleteProduct(id: bigint) {
     await this.repository.delete(id)
-    return { message: 'Product deleted successfully' }
+    return { message: "Product deleted successfully" }
   }
 }

@@ -53,6 +53,4 @@ global {
     teams: Team[]
     navGroups: NavGroup[]
   }
-
-  type PriceRange = 'budget' | 'standard' | 'premium' | null
 }
