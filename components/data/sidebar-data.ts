@@ -1,5 +1,4 @@
 // sidebar-data.ts (server-safe)
-import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {

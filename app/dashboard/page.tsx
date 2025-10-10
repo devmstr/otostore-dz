@@ -7,7 +7,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Main } from '@/components/layout/main'
+import { Main } from '@/components/main'
 
 import { Overview } from './_components/overview'
 import { RecentSales } from './_components/recent-sales'

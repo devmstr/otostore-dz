@@ -19,7 +19,7 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import { Badge } from '../ui/badge'
+import { Badge } from './ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '../ui/dropdown-menu'
+} from './ui/dropdown-menu'
 import * as LucideIcons from 'lucide-react'
 import {
   type NavCollapsible,

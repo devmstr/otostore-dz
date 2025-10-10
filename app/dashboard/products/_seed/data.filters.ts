@@ -1,4 +1,4 @@
-import { FilterItem } from '@/components/layout/types'
+import { FilterItem } from '@/components/types'
 
 export const categories: FilterItem[] = [
   {

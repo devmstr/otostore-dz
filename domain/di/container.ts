@@ -1,7 +1,8 @@
+import { Container } from '../@types'
 import { prisma } from '../database/db-service'
 import { ProductRepository } from '../repositories/product.repository'
 import { ProductService } from '../services/product.service'
-import type { Container } from '../@types'
+// import type { Container } from '../@types'
 
 /**
  * A simple, type-safe DI container

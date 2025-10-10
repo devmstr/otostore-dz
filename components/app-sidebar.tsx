@@ -7,7 +7,7 @@ import {
   SidebarRail
 } from '@/components/ui/sidebar'
 // import { AppTitle } from './app-title'
-import { useDirection } from '../providers/direction-provider'
+import { useDirection } from './providers/direction-provider'
 import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
