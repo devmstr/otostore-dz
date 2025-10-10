@@ -24,8 +24,8 @@ import {
   SheetTitle
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { type ProductDto } from '@/domain/dto/product.dto'
-import { categories, availability } from '../_seed/data.filters'
+import type { ProductDto } from '@/domain/dto/product.dto'
+import { categories, availability, priceRanges } from '../_seed/data.filters'
 import Uploader from '@/components/uplaoder'
 import { nullToUndefined } from '@/lib/utils'
 
@@ -40,6 +40,7 @@ const formSchema = z.object({
   price: z.number().positive('Price must be greater than 0.'),
   category: z.string().min(1, 'Please select a category.'),
   availability: z.string().min(1, 'Please select availability.'),
+  priceRange: z.enum(['budget', 'standard', 'premium']).optional(),
   imageUrl: z.string().optional()
 })
 
@@ -59,6 +60,7 @@ export function ProductsMutateDrawer({
       price: 0,
       category: '',
       availability: '',
+      priceRange: 'budget',
       imageUrl: ''
     }
   })
@@ -126,7 +128,9 @@ export function ProductsMutateDrawer({
                       value={field.value ?? ''}
                       onChange={(e) =>
                         field.onChange(
-                          e.target.value ? parseFloat(e.target.value) : ''
+                          e.target.value
+                            ? Number.parseFloat(e.target.value)
+                            : ''
                         )
                       }
                     />
@@ -166,6 +170,24 @@ export function ProductsMutateDrawer({
                     onValueChange={field.onChange}
                     placeholder="Select availability"
                     items={availability}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Price Range */}
+            <FormField
+              control={form.control}
+              name="priceRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price Range</FormLabel>
+                  <SelectDropdown
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Select price range"
+                    items={priceRanges}
                   />
                   <FormMessage />
                 </FormItem>

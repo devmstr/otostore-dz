@@ -1,5 +1,6 @@
 import { ProductRepository } from '../repositories/product.repository'
-import { ProductDto, ProductSchema } from '../dto/product.dto'
+import { CreateProductDto, ProductDto, ProductSchema } from '../dto/product.dto'
+import { PriceRange } from '@/lib/constants/product'
 
 export class ProductService {
   constructor(private readonly repository: ProductRepository) {}
@@ -8,7 +9,7 @@ export class ProductService {
     search?: string
     category?: string
     availability?: string
-    priceRange?: 'budget' | 'standard' | 'premium'
+    priceRange?: PriceRange
     page?: number
     pageSize?: number
   }) {
@@ -21,7 +22,7 @@ export class ProductService {
     return product
   }
 
-  async createProduct(input: ProductDto) {
+  async createProduct(input: CreateProductDto) {
     const validated = ProductSchema.parse(input)
     return this.repository.create(validated)
   }
