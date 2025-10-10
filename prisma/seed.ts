@@ -90,8 +90,8 @@ async function main() {
   // Create products
   console.log("📦 Creating products...")
   const productData = Array.from({ length: 150 }, () => {
-    const cost = Number(faker.commerce.price({ min: 3, max: 400 }))
-    const price = cost * faker.number.float({ min: 1.2, max: 2.5 })
+    const cost = faker.number.float({ min: 3, max: 400, fractionDigits: 2 })
+    const price = faker.number.float({ min: cost * 1.2, max: cost * 2.5, fractionDigits: 2 })
     return {
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
@@ -123,7 +123,7 @@ async function main() {
     city: faker.location.city(),
     postalCode: faker.location.zipCode(),
     loyaltyPoints: faker.number.int({ min: 0, max: 1000 }),
-    totalSpent: Number(faker.commerce.price({ min: 0, max: 5000 })),
+    totalSpent: faker.number.float({ min: 0, max: 5000, fractionDigits: 2 }),
   }))
 
   const customers = await Promise.all(customerData.map((data) => prisma.customer.create({ data })))
@@ -149,9 +149,9 @@ async function main() {
     let subtotal = 0
     const items = orderProducts.map((product) => {
       const quantity = faker.number.int({ min: 1, max: 5 })
-      const price = Number(product.price)
-      const discount = faker.number.float({ min: 0, max: price * 0.2 })
-      const itemSubtotal = (price - discount) * quantity
+      const price = product.price
+      const discount = faker.number.float({ min: 0, max: price * 0.2, fractionDigits: 2 })
+      const itemSubtotal = Number.parseFloat(((price - discount) * quantity).toFixed(2))
       subtotal += itemSubtotal
 
       return {
@@ -163,9 +163,9 @@ async function main() {
       }
     })
 
-    const tax = subtotal * 0.1
-    const discount = faker.number.float({ min: 0, max: subtotal * 0.1 })
-    const total = subtotal + tax - discount
+    const tax = Number.parseFloat((subtotal * 0.1).toFixed(2))
+    const discount = faker.number.float({ min: 0, max: subtotal * 0.1, fractionDigits: 2 })
+    const total = Number.parseFloat((subtotal + tax - discount).toFixed(2))
 
     const order = await prisma.order.create({
       data: {
@@ -233,9 +233,14 @@ async function main() {
   // Customer debts
   for (let i = 0; i < 30; i++) {
     const customer = faker.helpers.arrayElement(customers)
-    const amount = Number(faker.commerce.price({ min: 50, max: 1000 }))
-    const paid = faker.helpers.arrayElement([0, amount * 0.3, amount * 0.5, amount])
-    const remaining = amount - paid
+    const amount = faker.number.float({ min: 50, max: 1000, fractionDigits: 2 })
+    const paid = faker.helpers.arrayElement([
+      0,
+      Number.parseFloat((amount * 0.3).toFixed(2)),
+      Number.parseFloat((amount * 0.5).toFixed(2)),
+      amount,
+    ])
+    const remaining = Number.parseFloat((amount - paid).toFixed(2))
     const status = remaining === 0 ? "PAID" : remaining < amount ? "PARTIAL" : "PENDING"
 
     const debt = await prisma.debt.create({
@@ -264,7 +269,9 @@ async function main() {
 
       for (let j = 0; j < paymentCount && remainingPayment > 0; j++) {
         const paymentAmount =
-          j === paymentCount - 1 ? remainingPayment : faker.number.float({ min: 10, max: remainingPayment })
+          j === paymentCount - 1
+            ? remainingPayment
+            : faker.number.float({ min: 10, max: remainingPayment, fractionDigits: 2 })
 
         await prisma.debtPayment.create({
           data: {
@@ -277,7 +284,7 @@ async function main() {
           },
         })
 
-        remainingPayment -= paymentAmount
+        remainingPayment = Number.parseFloat((remainingPayment - paymentAmount).toFixed(2))
       }
     }
   }
@@ -285,9 +292,9 @@ async function main() {
   // Supplier debts
   for (let i = 0; i < 20; i++) {
     const supplier = faker.helpers.arrayElement(suppliers)
-    const amount = Number(faker.commerce.price({ min: 500, max: 5000 }))
-    const paid = faker.helpers.arrayElement([0, amount * 0.5, amount])
-    const remaining = amount - paid
+    const amount = faker.number.float({ min: 500, max: 5000, fractionDigits: 2 })
+    const paid = faker.helpers.arrayElement([0, Number.parseFloat((amount * 0.5).toFixed(2)), amount])
+    const remaining = Number.parseFloat((amount - paid).toFixed(2))
     const status = remaining === 0 ? "PAID" : remaining < amount ? "PARTIAL" : "PENDING"
 
     const debt = await prisma.debt.create({

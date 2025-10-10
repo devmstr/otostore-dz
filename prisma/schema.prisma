@@ -43,12 +43,13 @@ model Customer {
   city          String?
   postalCode    String?
   loyaltyPoints Int      @default(0)
-  totalSpent    Decimal  @default(0) @db.Decimal(10, 2)
+  totalSpent    Float    @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   // Relations
   orders Order[]
+  debts  Debt[]
 
   @@index([email])
   @@index([phone])
@@ -79,8 +80,8 @@ model Product {
   description  String?
   sku          String?  @unique
   barcode      String?  @unique
-  price        Decimal  @db.Decimal(10, 2)
-  cost         Decimal? @db.Decimal(10, 2)
+  price        Float
+  cost         Float?
   category     String
   availability String   @default("in_stock")
   priceRange   String?
@@ -112,10 +113,10 @@ model Order {
   status          OrderStatus @default(PENDING)
   paymentMethod   String?     // cash, card, mobile
   paymentStatus   PaymentStatus @default(PENDING)
-  subtotal        Decimal     @db.Decimal(10, 2)
-  tax             Decimal     @default(0) @db.Decimal(10, 2)
-  discount        Decimal     @default(0) @db.Decimal(10, 2)
-  total           Decimal     @db.Decimal(10, 2)
+  subtotal        Float
+  tax             Float       @default(0)
+  discount        Float       @default(0)
+  total           Float
   notes           String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -152,9 +153,9 @@ model OrderItem {
   productId BigInt
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  price     Decimal @db.Decimal(10, 2) // Price at time of order
-  discount  Decimal @default(0) @db.Decimal(10, 2)
-  subtotal  Decimal @db.Decimal(10, 2)
+  price     Float   // Price at time of order
+  discount  Float   @default(0)
+  subtotal  Float
 
   @@index([orderId])
   @@index([productId])
@@ -210,9 +211,9 @@ model Debt {
   supplierId    BigInt?
   supplier      Supplier?   @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   orderId       BigInt?     // Reference to related order if applicable
-  amount        Decimal     @db.Decimal(10, 2)
-  paid          Decimal     @default(0) @db.Decimal(10, 2)
-  remaining     Decimal     @db.Decimal(10, 2) // Calculated: amount - paid
+  amount        Float
+  paid          Float       @default(0)
+  remaining     Float       // Calculated: amount - paid
   status        DebtStatus  @default(PENDING)
   dueDate       DateTime?
   description   String?
@@ -246,7 +247,7 @@ model DebtPayment {
   id          BigInt   @id @default(autoincrement())
   debtId      BigInt
   debt        Debt     @relation(fields: [debtId], references: [id], onDelete: Cascade)
-  amount      Decimal  @db.Decimal(10, 2)
+  amount      Float
   method      String?  // cash, card, bank transfer
   reference   String?  // Payment reference number
   notes       String?
