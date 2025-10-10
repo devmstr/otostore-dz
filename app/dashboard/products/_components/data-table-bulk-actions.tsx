@@ -15,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table/bulk-actions'
+import { DataTableBulkActions as BulkActionsToolbar } from '../_components/bulk-actions'
 import { categories, availability, priceRanges } from '../_seed/data.filters'
 import { type Product } from '../_seed/schema'
 import { TasksMultiDeleteDialog } from './tasks-multi-delete-dialog'

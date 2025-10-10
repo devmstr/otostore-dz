@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { SignOutDialog } from '@/components/sign-out-dialog'
-import { sidebarData } from './data/sidebar-data'
+import { sidebarData } from '../config/sidebar-data'
 
 export function ProfileDropdown() {
   const [open, setOpen] = useDialogState()

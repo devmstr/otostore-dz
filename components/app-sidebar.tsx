@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/sidebar'
 // import { AppTitle } from './app-title'
 import { useDirection } from './providers/direction-provider'
-import { sidebarData } from './data/sidebar-data'
+import { sidebarData } from '@/config'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
