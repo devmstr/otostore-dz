@@ -11,18 +11,193 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id        String   @id // Clerk user ID
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+  role      UserRole @default(CASHIER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders    Order[]
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  CASHIER
+}
+
+model Customer {
+  id            BigInt   @id @default(autoincrement())
+  name          String
+  email         String?  @unique
+  phone         String?
+  address       String?
+  city          String?
+  postalCode    String?
+  loyaltyPoints Int      @default(0)
+  totalSpent    Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  orders Order[]
+
+  @@index([email])
+  @@index([phone])
+  @@map("customers")
+}
+
+model Supplier {
+  id          BigInt   @id @default(autoincrement())
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  postalCode  String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  products Product[]
+
+  @@map("suppliers")
+}
+
 model Product {
   id           BigInt   @id @default(autoincrement())
   name         String
   description  String?
+  sku          String?  @unique
+  barcode      String?  @unique
   price        Decimal  @db.Decimal(10, 2)
+  cost         Decimal? @db.Decimal(10, 2)
   category     String
   availability String   @default("in_stock")
   priceRange   String?
   stock        Int      @default(0)
+  minStock     Int      @default(10) // Alert threshold
+  maxStock     Int?
   imageUrl     String?
+  supplierId   BigInt?
+  supplier     Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Relations
+  orderItems     OrderItem[]
+  stockMovements StockMovement[]
+
+  @@index([category])
+  @@index([supplierId])
   @@map("products")
+}
+
+model Order {
+  id              BigInt      @id @default(autoincrement())
+  orderNumber     String      @unique
+  customerId      BigInt?
+  customer        Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          OrderStatus @default(PENDING)
+  paymentMethod   String?     // cash, card, mobile
+  paymentStatus   PaymentStatus @default(PENDING)
+  subtotal        Decimal     @db.Decimal(10, 2)
+  tax             Decimal     @default(0) @db.Decimal(10, 2)
+  discount        Decimal     @default(0) @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  items OrderItem[]
+
+  @@index([customerId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model OrderItem {
+  id        BigInt  @id @default(autoincrement())
+  orderId   BigInt
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId BigInt
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2) // Price at time of order
+  discount  Decimal @default(0) @db.Decimal(10, 2)
+  subtotal  Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model StockMovement {
+  id          BigInt           @id @default(autoincrement())
+  productId   BigInt
+  product     Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type        MovementType
+  quantity    Int              // Positive for IN, negative for OUT
+  reason      String?
+  reference   String?          // Order number, transfer ID, etc.
+  notes       String?
+  createdAt   DateTime         @default(now())
+
+  @@index([productId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("stock_movements")
+}
+
+enum MovementType {
+  PURCHASE      // Stock received from supplier
+  SALE          // Stock sold to customer
+  ADJUSTMENT    // Manual adjustment
+  RETURN        // Customer return
+  DAMAGE        // Damaged goods
+  TRANSFER      // Transfer between locations
+}
+
+model AuditLog {
+  id        BigInt   @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // e.g., "CREATE_PRODUCT", "UPDATE_ORDER"
+  entity    String   // e.g., "Product", "Order"
+  entityId  String?  // ID of the affected entity
+  details   Json?    // Additional details about the action
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

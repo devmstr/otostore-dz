@@ -18,6 +18,7 @@
     "studio": "prisma studio"
   },
   "dependencies": {
+    "@clerk/nextjs": "latest",
     "@faker-js/faker": "latest",
     "@hookform/resolvers": "latest",
     "@prisma/client": "latest",
@@ -43,6 +44,7 @@
     "@tanstack/react-query-devtools": "latest",
     "@tanstack/react-table": "latest",
     "axios": "latest",
+    "child_process": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "latest",
@@ -64,11 +66,13 @@
     "recharts": "latest",
     "root": "github:tanstack/react-query",
     "sonner": "latest",
+    "svix": "latest",
     "table": "github:tanstack/react-table",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tanstack-table-search-params": "^0.12.0",
     "url": "latest",
+    "util": "latest",
     "zod": "^4.1.11"
   },
   "devDependencies": {
