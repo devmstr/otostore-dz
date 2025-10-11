@@ -1,22 +1,19 @@
-'use client'
+"use client"
 
-import type { ColumnDef } from '@tanstack/react-table'
-import { Checkbox } from '@/components/ui/checkbox'
-import { DataTableColumnHeader } from './data-table-column-header'
-import { DataTableRowActions } from './data-table-row-actions'
-import type { CustomerDto } from '@/domain/dto/customer.dto'
-import { Badge } from '@/components/ui/badge'
-import { format } from 'date-fns'
+import type { ColumnDef } from "@tanstack/react-table"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DataTableColumnHeader } from "./data-table-column-header"
+import { DataTableRowActions } from "./data-table-row-actions"
+import type { CustomerDto } from "@/domain/dto/customer.dto"
+import { Badge } from "@/components/ui/badge"
+import { format } from "date-fns"
 
 export const columns: ColumnDef<CustomerDto>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
         className="translate-y-[2px]"
@@ -31,114 +28,74 @@ export const columns: ColumnDef<CustomerDto>[] = [
       />
     ),
     enableSorting: false,
-    enableHiding: false
+    enableHiding: false,
   },
   {
-    accessorKey: 'id',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
-    ),
-    cell: ({ row }) => (
-      <div className="font-mono text-sm">#{String(row.getValue('id'))}</div>
-    ),
+    accessorKey: "id",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
+    cell: ({ row }) => <div className="font-mono text-sm">#{String(row.getValue("id"))}</div>,
     enableSorting: false,
-    enableHiding: false
+    enableHiding: false,
   },
   {
-    accessorKey: 'name',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
+    accessorKey: "name",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ row }) => <span className="max-w-[200px] truncate font-medium">{row.getValue("name")}</span>,
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     cell: ({ row }) => (
-      <span className="max-w-[200px] truncate font-medium">
-        {row.getValue('name')}
-      </span>
-    )
+      <span className="max-w-[200px] truncate text-muted-foreground">{row.getValue("email") || "—"}</span>
+    ),
   },
   {
-    accessorKey: 'email',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-    cell: ({ row }) => (
-      <span className="max-w-[200px] truncate text-muted-foreground">
-        {row.getValue('email') || '—'}
-      </span>
-    )
+    accessorKey: "phone",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+    cell: ({ row }) => <span className="text-muted-foreground">{row.getValue("phone") || "—"}</span>,
   },
   {
-    accessorKey: 'phone',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phone" />
-    ),
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {row.getValue('phone') || '—'}
-      </span>
-    )
+    accessorKey: "city",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="City" />,
+    cell: ({ row }) => <span>{row.getValue("city") || "—"}</span>,
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
   },
   {
-    accessorKey: 'city',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="City" />
-    ),
-    cell: ({ row }) => <span>{row.getValue('city') || '—'}</span>,
-    filterFn: (row, id, value) => value.includes(row.getValue(id))
-  },
-  {
-    accessorKey: 'totalSpent',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Total Spent" />
-    ),
+    accessorKey: "totalSpent",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Total Spent" />,
     cell: ({ row }) => {
-      const amount = row.getValue<number>('totalSpent')
+      const amount = row.getValue<number>("totalSpent")
       return <span className="font-medium">${amount.toFixed(2)}</span>
-    }
+    },
   },
   {
-    accessorKey: 'loyaltyPoints',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Points" />
-    ),
+    accessorKey: "loyaltyPoints",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Points" />,
     cell: ({ row }) => {
-      const points = row.getValue<number>('loyaltyPoints')
-      let tier = 'new'
-      if (points >= 1000) tier = 'vip'
-      else if (points >= 100) tier = 'regular'
+      const points = row.getValue<number>("loyaltyPoints")
+      let tier = "new"
+      if (points >= 1000) tier = "vip"
+      else if (points >= 100) tier = "regular"
 
       return (
         <div className="flex items-center gap-2">
-          <Badge
-            variant={
-              tier === 'vip'
-                ? 'default'
-                : tier === 'regular'
-                ? 'secondary'
-                : 'outline'
-            }
-          >
+          <Badge variant={tier === "vip" ? "default" : tier === "regular" ? "secondary" : "outline"}>
             {points} pts
           </Badge>
         </div>
       )
-    }
+    },
   },
   {
-    accessorKey: 'createdAt',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Joined" />
-    ),
+    accessorKey: "createdAt",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Joined" />,
     cell: ({ row }) => {
-      const date = row.getValue<Date>('createdAt')
-      return (
-        <span className="text-sm text-muted-foreground">
-          {date ? format(new Date(date), 'PP') : '—'}
-        </span>
-      )
-    }
+      const date = row.getValue<Date>("createdAt")
+      return <span className="text-sm text-muted-foreground">{date ? format(new Date(date), "PP") : "—"}</span>
+    },
   },
   {
-    id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />
-  }
+    id: "actions",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+  },
 ]

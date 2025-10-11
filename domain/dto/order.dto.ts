@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export const OrderItemSchema = z.object({
   id: z.bigint().optional(),
@@ -6,7 +6,7 @@ export const OrderItemSchema = z.object({
   quantity: z.number().int().positive(),
   price: z.number().nonnegative(),
   discount: z.number().nonnegative().default(0),
-  subtotal: z.number().nonnegative()
+  subtotal: z.number().nonnegative(),
 })
 
 export const OrderSchema = z.object({
@@ -14,22 +14,16 @@ export const OrderSchema = z.object({
   orderNumber: z.string(),
   customerId: z.bigint().nullable().optional(),
   userId: z.string(),
-  status: z.enum([
-    'PENDING',
-    'PROCESSING',
-    'COMPLETED',
-    'CANCELLED',
-    'REFUNDED'
-  ]),
+  status: z.enum(["PENDING", "PROCESSING", "COMPLETED", "CANCELLED", "REFUNDED"]),
   paymentMethod: z.string().nullable().optional(),
-  paymentStatus: z.enum(['PENDING', 'PAID', 'FAILED', 'REFUNDED']),
+  paymentStatus: z.enum(["PENDING", "PAID", "FAILED", "REFUNDED"]),
   subtotal: z.number().nonnegative(),
   tax: z.number().nonnegative().default(0),
   discount: z.number().nonnegative().default(0),
   total: z.number().nonnegative(),
   notes: z.string().nullable().optional(),
   createdAt: z.date().optional(),
-  updatedAt: z.date().optional()
+  updatedAt: z.date().optional(),
 })
 
 export const CreateOrderSchema = z.object({
@@ -41,11 +35,10 @@ export const CreateOrderSchema = z.object({
       z.object({
         productId: z.bigint(),
         quantity: z.number().int().positive(),
-        price: z.number().int().positive(),
-        discount: z.number().nonnegative().default(0)
-      })
+        discount: z.number().nonnegative().default(0),
+      }),
     )
-    .min(1, 'Order must have at least one item')
+    .min(1, "Order must have at least one item"),
 })
 
 export type OrderDto = z.infer<typeof OrderSchema>

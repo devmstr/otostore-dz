@@ -43,7 +43,7 @@ export const columns: ColumnDef<ProductDto>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Barcode" />
     ),
-    cell: ({ row }) => <div className="">{row.original.barcode}</div>,
+    cell: ({ row }) => <div className="">{row.getValue('id')}</div>,
     enableSorting: false,
     enableHiding: false
   },
@@ -178,6 +178,6 @@ export const columns: ColumnDef<ProductDto>[] = [
 
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions<ProductDto> row={row} />
+    cell: ({ row }) => <DataTableRowActions row={row} />
   }
 ]
