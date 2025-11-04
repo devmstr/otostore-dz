@@ -1,8 +1,8 @@
-"use server"
+'use server'
 
-import { container } from "@/domain/di/container"
-import { requireAuth, createAuditLog } from "@/lib/auth"
-import { revalidatePath } from "next/cache"
+import { container } from '@/domain/di/container'
+import { requireAuth, createAuditLog } from '@/lib/auth'
+import { revalidatePath } from 'next/cache'
 
 export async function getOrdersAction(params: {
   page?: number
@@ -29,6 +29,7 @@ export async function createOrderAction(data: {
   notes?: string
   items: Array<{
     productId: bigint
+    price: number
     quantity: number
     discount?: number
   }>
@@ -37,30 +38,34 @@ export async function createOrderAction(data: {
 
   const order = await container.orderService.createOrder(data, user.id)
 
-  await createAuditLog("CREATE_ORDER", "Order", order.id.toString(), {
+  await createAuditLog('CREATE_ORDER', 'Order', order.id.toString(), {
     orderNumber: order.orderNumber,
-    total: order.total,
+    total: order.total
   })
 
-  revalidatePath("/dashboard/orders")
+  revalidatePath('/dashboard/orders')
   return order
 }
 
 export async function updateOrderStatusAction(
   id: bigint,
-  status: "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED" | "REFUNDED",
-  paymentStatus?: "PENDING" | "PAID" | "FAILED" | "REFUNDED",
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED' | 'REFUNDED',
+  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
 ) {
   await requireAuth()
 
-  const order = await container.orderService.updateOrderStatus(id, status, paymentStatus)
-
-  await createAuditLog("UPDATE_ORDER_STATUS", "Order", id.toString(), {
+  const order = await container.orderService.updateOrderStatus(
+    id,
     status,
-    paymentStatus,
+    paymentStatus
+  )
+
+  await createAuditLog('UPDATE_ORDER_STATUS', 'Order', id.toString(), {
+    status,
+    paymentStatus
   })
 
-  revalidatePath("/dashboard/orders")
+  revalidatePath('/dashboard/orders')
   return order
 }
 
@@ -69,8 +74,8 @@ export async function cancelOrderAction(id: bigint) {
 
   const order = await container.orderService.cancelOrder(id)
 
-  await createAuditLog("CANCEL_ORDER", "Order", id.toString())
+  await createAuditLog('CANCEL_ORDER', 'Order', id.toString())
 
-  revalidatePath("/dashboard/orders")
+  revalidatePath('/dashboard/orders')
   return order
 }

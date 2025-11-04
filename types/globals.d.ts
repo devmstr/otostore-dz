@@ -1,16 +1,18 @@
+import { icons } from '@/lib/icons'
 import { type LinkProps } from 'next/link'
-import * as LucideIcons from 'lucide-react'
 
 export {} // ensures this file is treated as a module for merging globals
 
 declare
 global {
-  type LucideIcon = keyof typeof LucideIcons
+  type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
+
+  type IconName = keyof typeof icons | undefined
 
   type FilterItem = {
     label: string
     value: string
-    icon: LucideIcon
+    icon: IconName
   }
 
   type User = {
@@ -21,14 +23,14 @@ global {
 
   type Team = {
     name: string
-    logo: LucideIcon
+    logo: IconName
     plan: string
   }
 
   type BaseNavItem = {
     title: string
     badge?: string
-    icon?: LucideIcon
+    icon?: IconName
   }
 
   type NavLink = BaseNavItem & {

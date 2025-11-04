@@ -29,21 +29,24 @@ import {
   DropdownMenuTrigger
 } from './ui/dropdown-menu'
 import * as LucideIcons from 'lucide-react'
-import {
-  type NavCollapsible,
-  type NavItem,
-  type NavLink,
-  type NavGroup as NavGroupProps
-} from './types'
 
-export function NavGroup({ title, items }: NavGroupProps) {
+import { dynamicIcon } from '@/lib/icons'
+import { Separator } from './ui/separator'
+
+export function NavGroup({ title, items }: NavGroup) {
   const { state, isMobile } = useSidebar()
   const pathname = usePathname()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
+      {state == 'collapsed' &&
+        !['General', 'Général', 'عام'].includes(title) && (
+          <div className="px-1.5">
+            <Separator className="mb-1 " />
+          </div>
+        )}
       <SidebarMenu>
-        {items.map((item) => {
+        {items.map((item: NavItem) => {
           const key = `${item.title}-${item.url}`
 
           if (!item.items)
@@ -73,9 +76,7 @@ function NavBadge({ children }: { children: ReactNode }) {
 
 function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
   const { setOpenMobile } = useSidebar()
-  const LinkIcon = LucideIcons[
-    item.icon as keyof typeof LucideIcons
-  ] as LucideIcon
+  const LinkIcon = dynamicIcon(item.icon)
 
   return (
     <SidebarMenuItem>
@@ -102,9 +103,7 @@ function SidebarMenuCollapsible({
   href: string
 }) {
   const { setOpenMobile } = useSidebar()
-  const LinkIcon = LucideIcons[
-    item.icon as keyof typeof LucideIcons
-  ] as LucideIcon
+  const LinkIcon = dynamicIcon(item.icon)
   return (
     <Collapsible
       asChild
@@ -122,10 +121,8 @@ function SidebarMenuCollapsible({
         </CollapsibleTrigger>
         <CollapsibleContent className="CollapsibleContent">
           <SidebarMenuSub>
-            {item.items.map((subItem) => {
-              const SubItemIcon = LucideIcons[
-                subItem.icon as keyof typeof LucideIcons
-              ] as LucideIcon
+            {item.items.map((subItem: NavLink) => {
+              const SubItemIcon = dynamicIcon(subItem.icon)
               return (
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton
@@ -180,10 +177,8 @@ function SidebarMenuCollapsedDropdown({
             {item.title} {item.badge ? `(${item.badge})` : ''}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {item.items.map((sub) => {
-            const SubItemIcon = LucideIcons[
-              sub.icon as keyof typeof LucideIcons
-            ] as LucideIcon
+          {item.items.map((sub: NavLink) => {
+            const SubItemIcon = dynamicIcon(sub.icon)
             return (
               <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
                 <Link
@@ -211,7 +206,7 @@ function checkIsActive(href: string, item: NavItem, mainNav = false) {
   return (
     href === item.url || // /endpint?search=param
     href.split('?')[0] === item.url || // endpoint
-    !!item?.items?.filter((i) => i.url === href).length || // if child nav is active
+    !!item?.items?.filter((i: NavLink) => i.url === href).length || // if child nav is active
     (mainNav &&
       href.split('/')[1] !== '' &&
       href.split('/')[1] === item?.url?.toString().split('/')[1])

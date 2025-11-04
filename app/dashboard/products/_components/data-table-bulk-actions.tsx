@@ -19,7 +19,7 @@ import { DataTableBulkActions as BulkActionsToolbar } from '../_components/bulk-
 import { categories, availability, priceRanges } from '../_seed/data.filters'
 import { type Product } from '../_seed/schema'
 import { TasksMultiDeleteDialog } from './tasks-multi-delete-dialog'
-import { DynamicIcon } from '@/lib/lucide-icons.resolver'
+import { DynamicIcon } from '@/lib/icons'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>

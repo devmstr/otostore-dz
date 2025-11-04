@@ -1,17 +1,19 @@
-import type { Container } from "../@types"
-import { prisma } from "../database/db-service"
-import { ProductRepository } from "../repositories/product.repository"
-import { ProductService } from "../services/product.service"
-import { OrderRepository } from "../repositories/order.repository"
-import { OrderService } from "../services/order.service"
-import { InventoryRepository } from "../repositories/inventory.repository"
-import { InventoryService } from "../services/inventory.service"
-import { CustomerRepository } from "../repositories/customer.repository"
-import { CustomerService } from "../services/customer.service"
-import { SupplierRepository } from "../repositories/supplier.repository"
-import { SupplierService } from "../services/supplier.service"
-import { DebtRepository } from "../repositories/debt.repository"
-import { DebtService } from "../services/debt.service"
+import type { Container } from '../@types'
+import { prisma } from '../database/db-service'
+import { ProductRepository } from '../repositories/product.repository'
+import { ProductService } from '../services/product.service'
+import { OrderRepository } from '../repositories/order.repository'
+import { OrderService } from '../services/order.service'
+import { InventoryRepository } from '../repositories/inventory.repository'
+import { InventoryService } from '../services/inventory.service'
+import { CustomerRepository } from '../repositories/customer.repository'
+import { CustomerService } from '../services/customer.service'
+import { SupplierRepository } from '../repositories/supplier.repository'
+import { SupplierService } from '../services/supplier.service'
+import { DebtRepository } from '../repositories/debt.repository'
+import { DebtService } from '../services/debt.service'
+import { ZakatRepository } from '../repositories/zakat.repository'
+import { ZakatService } from '../services/zakat.service'
 
 /**
  * A simple, type-safe DI container
@@ -30,6 +32,8 @@ class DIContainer implements Container {
   supplierService: SupplierService
   debtRepository: DebtRepository
   debtService: DebtService
+  zakatRepository: ZakatRepository
+  zakatService: ZakatService
 
   constructor() {
     // Instantiate and wire dependencies manually
@@ -50,6 +54,10 @@ class DIContainer implements Container {
 
     this.debtRepository = new DebtRepository(prisma)
     this.debtService = new DebtService(this.debtRepository)
+
+    // zakat module
+    this.zakatRepository = new ZakatRepository(prisma)
+    this.zakatService = new ZakatService(this.zakatRepository)
   }
 }
 

@@ -7,31 +7,36 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { SidebarNav } from './_components/sidebar-nav'
 
-const sidebarNavItems = [
+const sidebarNavItems: NavLink[] = [
   {
     title: 'Profile',
-    href: '/dashboard/settings',
-    icon: <UserCog size={18} />
+    url: '/dashboard/settings',
+    icon: 'UserCog'
   },
   {
     title: 'Account',
-    href: '/dashboard/settings/account',
-    icon: <Wrench size={18} />
+    url: '/dashboard/settings/account',
+    icon: 'Wrench'
   },
   {
     title: 'Appearance',
-    href: '/dashboard/settings/appearance',
-    icon: <Palette size={18} />
+    url: '/dashboard/settings/appearance',
+    icon: 'Palette'
   },
   {
     title: 'Notifications',
-    href: '/dashboard/settings/notifications',
-    icon: <Bell size={18} />
+    url: '/dashboard/settings/notifications',
+    icon: 'Bell'
   },
   {
     title: 'Display',
-    href: '/dashboard/settings/display',
-    icon: <Monitor size={18} />
+    url: '/dashboard/settings/display',
+    icon: 'Monitor'
+  },
+  {
+    title: 'Zakat',
+    url: '/dashboard/settings/zakat',
+    icon: 'HandCoins'
   }
 ]
 

@@ -20,7 +20,7 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { DynamicIcon } from '@/lib/lucide-icons.resolver'
+import { DynamicIcon } from '@/lib/icons'
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>

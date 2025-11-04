@@ -32,8 +32,8 @@ export const priceRanges: FilterItem[] = PRICE_RANGES.map((value) => ({
 }))
 
 // Helper functions for icons
-function getIconForCategory(category: string): LucideIcon {
-  const iconMap: Record<string, LucideIcon> = {
+function getIconForCategory(category: string): IconName {
+  const iconMap: Record<string, IconName> = {
     electronics: 'Cpu',
     clothing: 'Shirt',
     books: 'BookOpen',
@@ -45,8 +45,8 @@ function getIconForCategory(category: string): LucideIcon {
   return iconMap[category] || 'Package'
 }
 
-function getIconForAvailability(status: string): LucideIcon {
-  const iconMap: Record<string, LucideIcon> = {
+function getIconForAvailability(status: string): IconName {
+  const iconMap: Record<string, IconName> = {
     'in-stock': 'Check',
     'out-of-stock': 'X',
     preorder: 'Clock'
@@ -54,8 +54,8 @@ function getIconForAvailability(status: string): LucideIcon {
   return iconMap[status] || 'Package'
 }
 
-function getIconForPriceRange(range: string): LucideIcon {
-  const iconMap: Record<string, LucideIcon> = {
+function getIconForPriceRange(range: string): IconName {
+  const iconMap: Record<string, IconName> = {
     budget: 'HandCoins',
     standard: 'CreditCard',
     premium: 'Crown'

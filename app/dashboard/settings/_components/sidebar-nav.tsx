@@ -14,13 +14,10 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { dynamicIcon } from '@/lib/icons'
 
 type SidebarNavProps = React.HTMLAttributes<HTMLElement> & {
-  items: {
-    href: string
-    title: string
-    icon: JSX.Element
-  }[]
+  items: NavLink[]
 }
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
@@ -29,7 +26,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   const [val, setVal] = useState<string>('')
 
   useEffect(() => {
-    setVal(pathname ?? items[0]?.href ?? '/')
+    setVal(pathname ?? items[0]?.url ?? '/')
   }, [pathname, items])
 
   const handleSelect = (e: string) => {
@@ -46,14 +43,20 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             <SelectValue placeholder="Select page" />
           </SelectTrigger>
           <SelectContent>
-            {items.map((item) => (
-              <SelectItem key={item.href} value={item.href}>
-                <div className="flex gap-x-4 px-2 py-1">
-                  <span className="scale-125">{item.icon}</span>
-                  <span className="text-md">{item.title}</span>
-                </div>
-              </SelectItem>
-            ))}
+            {items.map((item) => {
+              const Icon = dynamicIcon(item.icon)
+              return (
+                <SelectItem
+                  key={item.url.toString()}
+                  value={item.url.toString()}
+                >
+                  <div className="flex gap-x-4 px-2 py-1">
+                    {item.icon && <Icon className="scale-125" />}
+                    <span className="text-md">{item.title}</span>
+                  </div>
+                </SelectItem>
+              )
+            })}
           </SelectContent>
         </Select>
       </div>
@@ -71,11 +74,12 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           {...props}
         >
           {items.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.url
+            const Icon = dynamicIcon(item.icon)
             return (
               <Link
-                key={item.href}
-                href={item.href}
+                key={item.url.toString()}
+                href={item.url}
                 className={cn(
                   buttonVariants({ variant: 'ghost' }),
                   isActive
@@ -84,13 +88,13 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                   'justify-start'
                 )}
               >
-                <span className="me-2">{item.icon}</span>
+                <Icon className="me-2" />
                 {item.title}
               </Link>
             )
           })}
         </nav>
-        <ScrollBar orientation='horizontal'/>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </>
   )
