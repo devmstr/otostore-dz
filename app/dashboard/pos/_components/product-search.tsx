@@ -1,16 +1,15 @@
-'use client'
+"use client"
 
-import { useState, useEffect, startTransition } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Search, Plus } from 'lucide-react'
-import { searchProducts } from '../_actions/pos'
-import { useDebounce } from '@/hooks/use-debounce'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Search, Plus } from "lucide-react"
+import { searchProducts } from "../_actions/pos"
+import { useDebounce } from "@/hooks/use-debounce"
 
 type Product = {
-  id: bigint
+  id: string
   name: string
   price: number
   stock: number
@@ -18,36 +17,18 @@ type Product = {
 }
 
 export function ProductSearch({
-  onAddToCart
+  onAddToCart,
 }: {
   onAddToCart: (product: Product) => void
 }) {
-  const pathname = usePathname()
-  const router = useRouter()
-  const params = new URLSearchParams()
-  const [query, setQuery] = useState(params.get('search') || '')
+  const [query, setQuery] = useState("")
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const debouncedQuery = useDebounce(query, 300)
 
   useEffect(() => {
-    setLoading(true)
-    searchProducts(debouncedQuery)
-      .then((result) => {
-        if (result.success && result.data) {
-          setProducts(result.data as Product[])
-        }
-      })
-      .finally(() => setLoading(false))
-  }, [])
-
-  useEffect(() => {
     if (debouncedQuery) {
       setLoading(true)
-      params.set('search', debouncedQuery)
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`, { scroll: false })
-      })
       searchProducts(debouncedQuery)
         .then((result) => {
           if (result.success && result.data) {
@@ -73,46 +54,34 @@ export function ProductSearch({
       </div>
 
       <div className="flex-1 space-y-2 overflow-y-auto">
-        {loading && (
-          <p className="text-center text-sm text-muted-foreground">
-            Searching...
-          </p>
-        )}
+        {loading && <p className="text-center text-sm text-muted-foreground">Searching...</p>}
 
         {!loading && products.length === 0 && query && (
-          <p className="text-center text-sm text-muted-foreground">
-            No products found
-          </p>
+          <p className="text-center text-sm text-muted-foreground">No products found</p>
         )}
 
         {!loading && products.length === 0 && !query && (
-          <p className="text-center text-sm text-muted-foreground">
-            Start typing to search for products
-          </p>
+          <p className="text-center text-sm text-muted-foreground">Start typing to search for products</p>
         )}
 
-        <div className="grid grid-cols-1 gap-2 text-left sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 pt-6">
-          {products.map((product) => (
-            <Button
-              key={product.id.toString()}
-              variant={'outline'}
-              onClick={() => onAddToCart(product)}
-              disabled={product.stock === 0}
-              className="group h-48 flex flex-col gap-2"
-            >
-              <h3 className="font-medium text-wrap">{product.name}</h3>
-              {product.sku && (
-                <span className="text-muted-foreground">
-                  SKU: {product.sku}
-                </span>
-              )}
-
-              <p className="text-3xl font-bold">${product.price.toFixed(2)}</p>
-              <span>Stock: {product.stock}</span>
-              <Plus className="scale-0 group-hover:scale-110 mr-1 h-5 w-5 transition-transform" />
-            </Button>
-          ))}
-        </div>
+        {products.map((product) => (
+          <Card key={product.id} className="flex items-center gap-4 p-4">
+            <div className="flex-1">
+              <h3 className="font-medium">{product.name}</h3>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                {product.sku && <span>SKU: {product.sku}</span>}
+                <span>Stock: {product.stock}</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
+              <Button size="sm" onClick={() => onAddToCart(product)} disabled={product.stock === 0}>
+                <Plus className="mr-1 h-4 w-4" />
+                Add
+              </Button>
+            </div>
+          </Card>
+        ))}
       </div>
     </div>
   )

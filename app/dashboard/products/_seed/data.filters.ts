@@ -1,3 +1,4 @@
+import type { FilterItem } from '@/components/types'
 import {
   PRICE_RANGES,
   CATEGORIES,
@@ -26,21 +27,20 @@ export const priceRanges: FilterItem[] = PRICE_RANGES.map((value) => ({
 }))
 
 // Helper functions for icons
-function getIconForCategory(category: string): IconName {
-  const iconMap: Record<string, IconName> = {
+function getIconForCategory(category: string): string {
+  const iconMap: Record<string, string> = {
     electronics: 'Cpu',
     clothing: 'Shirt',
     books: 'BookOpen',
-    furniture: 'BedDouble',
+    furniture: 'Bed',
     sports: 'Dumbbell',
-    toys: 'Puzzle',
-    all: 'CircleSlash2'
+    toys: 'Puzzle'
   }
   return iconMap[category] || 'Package'
 }
 
-function getIconForAvailability(status: string): IconName {
-  const iconMap: Record<string, IconName> = {
+function getIconForAvailability(status: string): string {
+  const iconMap: Record<string, string> = {
     'in-stock': 'Check',
     'out-of-stock': 'X',
     preorder: 'Clock'
@@ -48,8 +48,8 @@ function getIconForAvailability(status: string): IconName {
   return iconMap[status] || 'Package'
 }
 
-function getIconForPriceRange(range: string): IconName {
-  const iconMap: Record<string, IconName> = {
+function getIconForPriceRange(range: string): string {
+  const iconMap: Record<string, string> = {
     budget: 'HandCoins',
     standard: 'CreditCard',
     premium: 'Crown'

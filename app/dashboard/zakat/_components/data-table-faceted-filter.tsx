@@ -21,7 +21,6 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { DynamicIcon } from '@/lib/icons'
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>
@@ -29,7 +28,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   options: {
     label: string
     value: string
-    icon?: IconName
+    icon?: React.ComponentType<{ className?: string }>
   }[]
 }
 
@@ -120,10 +119,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <CheckIcon className={cn('h-4 w-4')} />
                     </div>
                     {option.icon && (
-                      <DynamicIcon
-                        name={option.icon}
-                        className="mr-2 h-4 w-4 text-muted-foreground"
-                      />
+                      <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (

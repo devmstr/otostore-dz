@@ -41,8 +41,7 @@ export const CreateOrderSchema = z.object({
       z.object({
         productId: z.bigint(),
         quantity: z.number().int().positive(),
-        price: z.number().int().positive(),
-        discount: z.number().nonnegative().default(0).optional()
+        discount: z.number().nonnegative().default(0)
       })
     )
     .min(1, 'Order must have at least one item')

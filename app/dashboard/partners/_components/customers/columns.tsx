@@ -7,8 +7,6 @@ import { DataTableRowActions } from './data-table-row-actions'
 import type { CustomerDto } from '@/domain/dto/customer.dto'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
-import { dynamicIcon, DynamicIcon } from '@/lib/icons'
-import { customerTiers } from '../../_seed/customers/data.filters'
 
 export const columns: ColumnDef<CustomerDto>[] = [
   {
@@ -85,29 +83,6 @@ export const columns: ColumnDef<CustomerDto>[] = [
       <DataTableColumnHeader column={column} title="City" />
     ),
     cell: ({ row }) => <span>{row.getValue('city') || '—'}</span>,
-    filterFn: (row, id, value) => value.includes(row.getValue(id))
-  },
-  {
-    accessorKey: 'type',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
-    ),
-    cell: ({ row }) => {
-      const type = customerTiers.find((c) => c.value === row.getValue('type'))
-      if (!type) return null
-
-      return (
-        <div className="flex items-center gap-2">
-          {type.icon && (
-            <DynamicIcon
-              name={type.icon}
-              className="text-muted-foreground size-4"
-            />
-          )}
-          <span>{type.label}</span>
-        </div>
-      )
-    },
     filterFn: (row, id, value) => value.includes(row.getValue(id))
   },
   {
